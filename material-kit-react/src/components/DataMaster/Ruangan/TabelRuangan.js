@@ -65,7 +65,7 @@ function CustomerListResults() {
             </TableHead>
             <TableBody>
               {ruangan.slice(0, limit).map((customer, i) => (
-                <TableRow hover key={customer.id}>
+                <TableRow hover key={customer._id}>
                   <TableCell>{i + 1}</TableCell>
                   <TableCell>{customer.ruang}</TableCell>
                   <TableCell>

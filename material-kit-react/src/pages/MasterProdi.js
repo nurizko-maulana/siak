@@ -1,4 +1,4 @@
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import { Box, Container } from '@material-ui/core';
 import CustomerListToolbar from '../components/DataMaster/Prodi/CustomerListToolbar';
 import TabelProdi from '../components/DataMaster/Prodi/TabelProdi';
@@ -7,7 +7,7 @@ import customers from '../__mocks__/customers';
 const DataMahasiswa = () => (
   <>
     <Helmet>
-      <title>Customers | Material Kit</title>
+      <title>Program Studi</title>
     </Helmet>
     <Box
       sx={{

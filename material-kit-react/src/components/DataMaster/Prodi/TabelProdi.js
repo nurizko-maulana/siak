@@ -64,16 +64,16 @@ function CustomerListResults() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {prodi.slice(0, limit).map((customer, i) => (
-                <TableRow hover key={customer.id}>
+              {prodi.slice(0, limit).map((p, i) => (
+                <TableRow hover key={p.id}>
                   <TableCell>{i + 1}</TableCell>
-                  <TableCell>{customer.nama_prodi}</TableCell>
+                  <TableCell>{p.nama_prodi}</TableCell>
                   <TableCell>
                     <Stack direction="row" spacing={2}>
                       <Button
                         variant="outlined"
                         startIcon={<Trash2 />}
-                        onClick={() => deleteData(customer._id)}
+                        onClick={() => deleteData(p._id)}
                       >
                         Delete
                       </Button>

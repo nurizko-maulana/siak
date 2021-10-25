@@ -1,4 +1,4 @@
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import { Box, Container } from '@material-ui/core';
 import CustomerListResults from '../components/DataMahasiswa/CustomerListResults';
 import CustomerListToolbar from '../components/DataMahasiswa/CustomerListToolbar';

@@ -1,4 +1,4 @@
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import { Box, Container } from '@material-ui/core';
 import CustomerListToolbar from '../components/DataMaster/Kelas/CustomerListToolbar';
 import TabelKelas from '../components/DataMaster/Kelas/TabelKelas';

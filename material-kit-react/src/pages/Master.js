@@ -1,4 +1,4 @@
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import { Box, Container, Grid } from '@material-ui/core';
 import DataKelas from '../components/DataMaster/DataKelas';
 import KodeMatakuliah from '../components/DataMaster/KodeMatakuliah';

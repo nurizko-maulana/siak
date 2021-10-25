@@ -9,7 +9,7 @@ import {
   Grid,
   TextField
 } from '@material-ui/core';
-import { createBrowserHistory } from 'history';
+import { useNavigate } from 'react-router-dom';
 
 const AccountProfileDetails = (props) => {
   const [ruang, setRuang] = useState({
@@ -17,7 +17,8 @@ const AccountProfileDetails = (props) => {
     id: ''
   });
 
-  const history = createBrowserHistory();
+  const navigate = useNavigate();
+
   function submit(e) {
     e.preventDefault();
     fetch('https://limitless-ocean-86312.herokuapp.com/api/ruangan', {
@@ -26,7 +27,7 @@ const AccountProfileDetails = (props) => {
       body: JSON.stringify({ id: new Date().getTime(), ruang: ruang.ruang })
     }).then((result) => {
       result.json().then((res) => {
-        history.push('ruangan');
+        navigate('/app/ruangan');
         console.warn('res', res);
       });
     });

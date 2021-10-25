@@ -1,4 +1,4 @@
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import { Box, Container } from '@material-ui/core';
 import FormRuangan from '../components/DataMaster/Ruangan/FormRuangan';
 
