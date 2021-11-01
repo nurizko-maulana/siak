@@ -1,5 +1,8 @@
+/* eslint-disable prefer-template */
 import { useState, useEffect } from 'react';
 import PerfectScrollbar from 'react-perfect-scrollbar';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Card,
@@ -13,20 +16,21 @@ import {
   Stack
 } from '@material-ui/core';
 import { Edit, Trash2 } from 'react-feather';
+import { setEditProdi } from '../../../store/action/masterAction';
 
 function CustomerListResults() {
   const [prodi, setProdi] = useState([]);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const getProdi = async () => {
-    const response = await fetch(
-      'https://limitless-ocean-86312.herokuapp.com/api/prodi'
-    );
+    const response = await fetch(`${process.env.REACT_APP_API}programStudi`);
     const matkuliah = await response.json();
     setProdi(matkuliah);
   };
 
   function deleteData(id) {
-    fetch(`https://limitless-ocean-86312.herokuapp.com/api/prodi/${id}`, {
+    fetch(`${process.env.REACT_APP_API}programStudi/${id}`, {
       method: 'DELETE'
     }).then((result) => {
       result.json().then((res) => {
@@ -35,6 +39,12 @@ function CustomerListResults() {
       });
     });
   }
+
+  const handleEdit = (data) => {
+    dispatch(setEditProdi(data));
+    console.log(data);
+    navigate('/app/master/prodi/edit');
+  };
 
   useEffect(() => {
     getProdi();
@@ -59,15 +69,24 @@ function CustomerListResults() {
               <TableRow>
                 <TableCell>No.</TableCell>
                 <TableCell>Prodi</TableCell>
+                <TableCell>Kelas</TableCell>
 
                 <TableCell>Aksi</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {prodi.slice(0, limit).map((p, i) => (
-                <TableRow hover key={p.id}>
+                <TableRow hover key={p._id}>
                   <TableCell>{i + 1}</TableCell>
-                  <TableCell>{p.nama_prodi}</TableCell>
+                  <TableCell>{p.nama}</TableCell>
+                  <TableCell>
+                    {p.id_kelas.map((kelas) => {
+                      if (p.id_kelas.length > 1) {
+                        return kelas.nama + ' , ';
+                      }
+                      return kelas.nama;
+                    })}
+                  </TableCell>
                   <TableCell>
                     <Stack direction="row" spacing={2}>
                       <Button
@@ -77,7 +96,11 @@ function CustomerListResults() {
                       >
                         Delete
                       </Button>
-                      <Button variant="contained" endIcon={<Edit />}>
+                      <Button
+                        variant="contained"
+                        onClick={() => handleEdit(p)}
+                        endIcon={<Edit />}
+                      >
                         Edit
                       </Button>
                     </Stack>

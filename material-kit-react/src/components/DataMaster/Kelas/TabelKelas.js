@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable quotes */
 import { useState, useEffect } from 'react';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import {
@@ -14,19 +16,34 @@ import {
 } from '@material-ui/core';
 import { Edit, Trash2 } from 'react-feather';
 
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { setEditKelas } from '../../../store/action/masterAction';
+
 function CustomerListResults() {
   const [kelas, setKelas] = useState([]);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const getKelas = async () => {
-    const response = await fetch(
-      'https://limitless-ocean-86312.herokuapp.com/api/kelas'
-    );
+    const response = await fetch(`${process.env.REACT_APP_API}kelas`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      }
+    });
     const kelass = await response.json();
     setKelas(kelass);
+    console.log('kelas', kelas);
+  };
+
+  const handleEdit = (data) => {
+    dispatch(setEditKelas(data));
+    navigate('/app/master/kelas/edit');
   };
 
   function deleteData(id) {
-    fetch(`https://limitless-ocean-86312.herokuapp.com/api/kelas/${id}`, {
+    fetch(`${process.env.REACT_APP_API}kelas/${id}`, {
       method: 'DELETE'
     }).then((result) => {
       result.json().then((res) => {
@@ -50,7 +67,7 @@ function CustomerListResults() {
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
-    /* eslint no-underscore-dangle: 0 */
+  /* eslint no-underscore-dangle: 0 */
   return (
     <Card>
       <PerfectScrollbar>
@@ -65,21 +82,32 @@ function CustomerListResults() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {kelas.slice(0, limit).map((customer, i) => (
-                <TableRow hover key={customer.id}>
+              {kelas.slice(0, limit).map((k, i) => (
+                <TableRow hover key={k._id}>
                   <TableCell>{i + 1}</TableCell>
-                  <TableCell>{customer.kelas}</TableCell>
-                  <TableCell>{customer.kode}</TableCell>
+                  <TableCell>{k.nama}</TableCell>
+                  <TableCell>
+                    {k.id_matakuliah.map((matkul) => {
+                      if (k.id_matakuliah.length > 1) {
+                        return `${matkul.nama} | `;
+                      }
+                      return matkul.nama;
+                    })}
+                  </TableCell>
                   <TableCell>
                     <Stack direction="row" spacing={2}>
                       <Button
                         variant="outlined"
                         startIcon={<Trash2 />}
-                        onClick={() => deleteData(customer._id)}
+                        onClick={() => deleteData(k._id)}
                       >
                         Delete
                       </Button>
-                      <Button variant="contained" endIcon={<Edit />}>
+                      <Button
+                        variant="contained"
+                        onClick={() => handleEdit(k)}
+                        endIcon={<Edit />}
+                      >
                         Edit
                       </Button>
                     </Stack>

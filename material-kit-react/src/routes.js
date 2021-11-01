@@ -10,42 +10,92 @@ import TambahKelas from './pages/TambahKelas';
 import TambahMatkul from './pages/TambahMatkul';
 import TambahProdi from './pages/TambahProdi';
 import TambahRuangan from './pages/TambahRuangan';
-import EditForm from './pages/EditForm';
 import MasterKelas from './pages/MasterKelas';
 import MasterMatkul from './pages/MasterMatkul';
 import MasterProdi from './pages/MasterProdi';
 import MasterRuangan from './pages/MasterRuangan';
 import TambahAbsensi from './pages/TambahAbsensi';
+import NotFound from './pages/NotFound';
 
 const routes = [
   {
-    path: 'app',
+    path: '/app',
+    exact: true,
     element: <DashboardLayout />,
     children: [
-      { path: 'master', element: <Master /> },
+      {
+        path: '/app/master',
+        element: <Master />
+      },
+      { path: 'matakuliah', element: <MasterMatkul /> },
+      {
+        path: '/app/master/ruangan',
+
+        element: <MasterRuangan />
+      },
+      {
+        path: '/app/master/ruangan/add',
+        element: <TambahRuangan />
+      },
+      {
+        path: '/app/master/ruangan/edit',
+        element: <TambahRuangan />
+      },
+      {
+        path: '/app/master/kelas',
+
+        element: <MasterKelas />
+      },
+      {
+        path: '/app/master/kelas/add',
+        element: <TambahKelas />
+      },
+      {
+        path: '/app/master/kelas/edit',
+        element: <TambahKelas />
+      },
+      {
+        path: '/app/master/prodi',
+
+        element: <MasterProdi />
+      },
+      {
+        path: '/app/master/prodi/add',
+        element: <TambahProdi />
+      },
+      {
+        path: '/app/master/prodi/edit',
+        element: <TambahProdi />
+      },
+      {
+        path: '/app/master/matkul',
+
+        element: <MasterMatkul />
+      },
+      {
+        path: '/app/master/matkul/add',
+        element: <TambahMatkul />
+      },
+      {
+        path: '/app/master/matkul/edit',
+        element: <TambahMatkul />
+      },
       { path: 'absensi', element: <Absensi /> },
-      { path: 'dataMahasiswa', element: <DataMahasiswa /> },
-      { path: 'dataKehadiran', element: <DataKehadiran /> },
-      { path: 'tambahMahasiswa', element: <TambahMahasiswa /> },
-      { path: 'kelas', element: <MasterKelas /> },
-      { path: 'ruangan', element: <MasterRuangan /> },
-      { path: 'prodi', element: <MasterProdi /> },
-      { path: 'matkul', element: <MasterMatkul /> },
-      { path: 'formKelas', element: <TambahKelas /> },
-      { path: 'formRuangan', element: <TambahRuangan /> },
-      { path: 'formProdi', element: <TambahProdi /> },
-      { path: 'formMatkul', element: <TambahMatkul /> },
       { path: 'formAbsensi', element: <TambahAbsensi /> },
-      { path: 'editForm', element: <EditForm /> },
-      { path: '*', element: <Navigate to="/404" /> }
+      { path: 'mahasiswa', element: <DataMahasiswa /> },
+      { path: 'dataKehadiran', element: <DataKehadiran /> },
+      { path: 'mahasiswa/add', element: <TambahMahasiswa /> },
+      { path: 'mahasiswa/edit', element: <TambahMahasiswa /> },
+      { path: '*', element: <NotFound /> }
     ]
   },
   {
     path: '/',
+    exact: true,
     element: <MainLayout />,
     children: [
-      { path: '/', element: <Navigate to="/app/dataMahasiswa" /> },
-      { path: '*', element: <Navigate to="/404" /> }
+      { path: '/', element: <Navigate to="/app/master" /> },
+      { path: '*', element: <NotFound /> }
     ]
   }
 ];

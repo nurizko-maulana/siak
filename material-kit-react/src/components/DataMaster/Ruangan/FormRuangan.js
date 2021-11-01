@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -9,41 +9,56 @@ import {
   Grid,
   TextField
 } from '@material-ui/core';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { updateData } from '../../../store/action/masterAction';
 
 const AccountProfileDetails = (props) => {
-  const [ruang, setRuang] = useState({
-    ruang: '',
-    id: ''
-  });
-
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { ruangan, edit } = useSelector((state) => state.master);
 
+  const [ruang, setRuang] = useState('');
+  useEffect(() => {
+    if (edit) {
+      setRuang(ruangan.ruang);
+    }
+  }, [dispatch, edit, ruangan]);
   function submit(e) {
     e.preventDefault();
-    fetch('https://limitless-ocean-86312.herokuapp.com/api/ruangan', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: new Date().getTime(), ruang: ruang.ruang })
-    }).then((result) => {
-      result.json().then((res) => {
-        navigate('/app/ruangan');
-        console.warn('res', res);
+    if (edit) {
+      const { _id } = ruangan;
+      axios
+        .put(`${process.env.REACT_APP_API}ruangan/${_id}`, {
+          ruang
+        })
+        .then((res) => {
+          console.log(res);
+          navigate('/app/master/ruangan');
+          dispatch(updateData());
+        });
+    } else {
+      fetch(`${process.env.REACT_APP_API}ruangan`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: new Date().getTime(), ruang })
+      }).then((result) => {
+        result.json().then((res) => {
+          navigate('/app/master/ruangan');
+          console.warn('res', res);
+        });
       });
-    });
-  }
-
-  function handel(e) {
-    const newdata = { ...ruang };
-    newdata[e.target.name] = e.target.value;
-    setRuang(newdata);
-    console.log(newdata);
+    }
   }
 
   return (
     <form autoComplete="off" noValidate {...props} onSubmit={(e) => submit(e)}>
       <Card>
-        <CardHeader subheader="Lengkapi Data Berikut" title="Tambah Ruangan" />
+        <CardHeader
+          subheader="Lengkapi Data Berikut"
+          title={edit ? 'Edit Ruangan' : 'Tambah Ruangan'}
+        />
         <Divider />
         <CardContent>
           <Grid container spacing={3}>
@@ -53,9 +68,9 @@ const AccountProfileDetails = (props) => {
                 helperText="Masukan Kode Ruangan"
                 label="Ruangan"
                 name="ruang"
-                onChange={(e) => handel(e)}
+                onChange={(e) => setRuang(e.target.value)}
                 required
-                value={ruang.ruang}
+                value={ruang}
                 variant="outlined"
               />
             </Grid>
@@ -71,7 +86,7 @@ const AccountProfileDetails = (props) => {
           }}
         >
           <Button color="primary" variant="contained" type="submit">
-            Save details
+            Save
           </Button>
         </Box>
       </Card>

@@ -15,7 +15,7 @@ const CustomerListToolbar = (props) => (
           <SvgIcon fontSize="small" color="action">
             <UserPlus color="white" />
           </SvgIcon>
-          &nbsp; Add customer
+          &nbsp; Tambah Data
         </Button>
       </Link>
     </Box>

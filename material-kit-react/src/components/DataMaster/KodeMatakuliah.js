@@ -26,7 +26,7 @@ const KodeMatakuliah = (props) => (
       </Box>
     </CardContent>
     <Divider />
-    <Link to="/app/matkul">
+    <Link to="/app/master/matkul">
       <CardActions>
         <Button color="primary" fullWidth variant="text">
           Kode Matakuliah

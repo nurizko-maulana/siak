@@ -1,3 +1,4 @@
+/* eslint-disable object-curly-newline */
 import { useEffect } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -10,12 +11,7 @@ import {
   List,
   Typography
 } from '@material-ui/core';
-import {
-  CheckSquare,
-  Folder,
-  Server,
-  Users as UsersIcon
-} from 'react-feather';
+import { CheckSquare, Folder, Server, Users as UsersIcon } from 'react-feather';
 import NavItem from './NavItem';
 
 const user = {
@@ -26,7 +22,7 @@ const user = {
 
 const items = [
   {
-    href: '/app/dataMahasiswa',
+    href: '/app/mahasiswa',
     icon: Folder,
     title: 'Data Mahasiswa'
   },
@@ -44,7 +40,7 @@ const items = [
     href: '/app/master',
     icon: Server,
     title: 'Data Master'
-  },
+  }
 ];
 
 const DashboardSidebar = ({ onMobileClose, openMobile }) => {
@@ -82,16 +78,10 @@ const DashboardSidebar = ({ onMobileClose, openMobile }) => {
           }}
           to="/app/account"
         />
-        <Typography
-          color="textPrimary"
-          variant="h5"
-        >
+        <Typography color="textPrimary" variant="h5">
           {user.name}
         </Typography>
-        <Typography
-          color="textSecondary"
-          variant="body2"
-        >
+        <Typography color="textSecondary" variant="body2">
           {user.jobTitle}
         </Typography>
       </Box>
@@ -154,8 +144,7 @@ DashboardSidebar.propTypes = {
 };
 
 DashboardSidebar.defaultProps = {
-  onMobileClose: () => {
-  },
+  onMobileClose: () => {},
   openMobile: false
 };
 

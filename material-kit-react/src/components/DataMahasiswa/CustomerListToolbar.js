@@ -18,12 +18,12 @@ const CustomerListToolbar = (props) => (
         justifyContent: 'flex-end'
       }}
     >
-      <Link to="/app/tambahMahasiswa">
+      <Link to="/app/mahasiswa/add">
         <Button color="primary" variant="contained">
           <SvgIcon fontSize="small" color="action">
             <UserPlus color="white" />
           </SvgIcon>
-          &nbsp; Add customer
+          &nbsp; Tambah Data
         </Button>
       </Link>
     </Box>

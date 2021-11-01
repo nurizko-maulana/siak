@@ -26,7 +26,7 @@ const DataKelas = (props) => (
       </Box>
     </CardContent>
     <Divider />
-    <Link to="/app/kelas">
+    <Link to="/app/master/kelas">
       <CardActions>
         <Button color="primary" fullWidth variant="text">
           Data Kelas

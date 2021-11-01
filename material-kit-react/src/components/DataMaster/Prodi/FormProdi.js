@@ -1,4 +1,9 @@
-import { useState } from 'react';
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-underscore-dangle */
+import { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Button,
@@ -7,32 +12,72 @@ import {
   CardHeader,
   Divider,
   Grid,
-  TextField
+  TextField,
+  Autocomplete
 } from '@material-ui/core';
+import { updateData } from '../../../store/action/masterAction';
 
 const AccountProfileDetails = (props) => {
-  const [values, setValues] = useState({
-    firstName: 'Katarina',
-    lastName: 'Smith',
-    email: 'demo@devias.io',
-    phone: '',
-    state: 'Alabama',
-    country: 'USA'
-  });
+  const [selectedProdi, setProdi] = useState('');
+  const [selectedKelas, setKelas] = useState([]);
+  const [listKelas, setListKelas] = useState([]);
+  const { edit, prodi } = useSelector((state) => state.master);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const handleChange = (event) => {
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value
+  const submit = (e) => {
+    e.preventDefault();
+    if (edit) {
+      axios
+        .put(`${process.env.REACT_APP_API}programStudi/${prodi._id}`, {
+          nama: selectedProdi,
+          id_kelas: selectedKelas.map((kelas) => kelas._id)
+        })
+        .then((res) => {
+          console.log(res);
+          dispatch(updateData());
+          navigate('/app/master/prodi');
+        });
+    } else {
+      console.log({
+        id: new Date().getTime,
+        nama: selectedProdi,
+        id_kelas: selectedKelas.map((kelas) => kelas._id)
+      });
+      axios
+        .post(`${process.env.REACT_APP_API}programStudi`, {
+          id: new Date().getTime,
+          nama: selectedProdi,
+          id_kelas: selectedKelas.map((kelas) => kelas._id)
+        })
+        .then((res) => {
+          console.log(res);
+          navigate('/app/master/prodi');
+        });
+    }
+  };
+
+  const getKelas = () => {
+    axios.get(`${process.env.REACT_APP_API}kelas`).then((res) => {
+      setListKelas(res.data);
     });
   };
 
+  useEffect(() => {
+    if (edit) {
+      setProdi(prodi.nama);
+      setKelas(prodi.id_kelas);
+    }
+    getKelas();
+    console.log('list kelas', listKelas);
+  }, []);
+
   return (
-    <form autoComplete="off" noValidate {...props}>
+    <form autoComplete="off" noValidate {...props} onSubmit={(e) => submit(e)}>
       <Card>
         <CardHeader
           subheader="Lengkapi Data Berikut"
-          title="Tambah Prodi"
+          title={edit ? 'Edit Prodi' : 'Tambah Prodi'}
         />
         <Divider />
         <CardContent>
@@ -41,12 +86,29 @@ const AccountProfileDetails = (props) => {
               <TextField
                 fullWidth
                 helperText="Masukan Nama Prodi"
-                label="Prodi"
+                label="Program Studi"
                 name="Kode"
-                onChange={handleChange}
+                onChange={(e) => setProdi(e.target.value)}
                 required
-                value={values.firstName}
+                value={selectedProdi}
                 variant="outlined"
+              />
+            </Grid>
+            <Grid item md={12} xs={12}>
+              <Autocomplete
+                multiple
+                id="tags-outlined"
+                options={listKelas}
+                getOptionLabel={(option) => option.nama || ''}
+                filterSelectedOptions
+                value={selectedKelas}
+                onChange={(e, value) => {
+                  setKelas(value);
+                  console.log('selected kelas', selectedKelas);
+                }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Kelas" />
+                )}
               />
             </Grid>
           </Grid>
@@ -60,8 +122,8 @@ const AccountProfileDetails = (props) => {
             p: 2
           }}
         >
-          <Button color="primary" variant="contained">
-            Save details
+          <Button color="primary" type="submit" variant="contained">
+            Save
           </Button>
         </Box>
       </Card>

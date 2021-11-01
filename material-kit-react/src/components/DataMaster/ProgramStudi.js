@@ -26,7 +26,7 @@ const ProgramStudi = (props) => (
       </Box>
     </CardContent>
     <Divider />
-    <Link to="/app/prodi">
+    <Link to="/app/master/prodi">
       <CardActions>
         <Button color="primary" fullWidth variant="text">
           Prodi

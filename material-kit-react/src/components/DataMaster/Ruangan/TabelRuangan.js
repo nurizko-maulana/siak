@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import PerfectScrollbar from 'react-perfect-scrollbar';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Card,
@@ -13,20 +15,21 @@ import {
   Stack
 } from '@material-ui/core';
 import { Edit, Trash2 } from 'react-feather';
+import { setEditRuangan } from '../../../store/action/masterAction';
 
 function CustomerListResults() {
   const [ruangan, setRuangan] = useState([]);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const getRuangan = async () => {
-    const response = await fetch(
-      'https://limitless-ocean-86312.herokuapp.com/api/ruangan'
-    );
+    const response = await fetch(`${process.env.REACT_APP_API}ruangan`);
     const matkuliah = await response.json();
     setRuangan(matkuliah);
   };
 
   function deleteData(id) {
-    fetch(`https://limitless-ocean-86312.herokuapp.com/api/ruangan/${id}`, {
+    fetch(`${process.env.REACT_APP_API}ruangan/${id}`, {
       method: 'DELETE'
     }).then((result) => {
       result.json().then((res) => {
@@ -35,6 +38,12 @@ function CustomerListResults() {
       });
     });
   }
+
+  const handleEdit = (data) => {
+    dispatch(setEditRuangan(data));
+    navigate('/app/master/ruangan/edit');
+    console.log('edit ruangan ok');
+  };
 
   useEffect(() => {
     getRuangan();
@@ -59,25 +68,28 @@ function CustomerListResults() {
               <TableRow>
                 <TableCell>No.</TableCell>
                 <TableCell>Ruangan</TableCell>
-
                 <TableCell>Aksi</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {ruangan.slice(0, limit).map((customer, i) => (
-                <TableRow hover key={customer._id}>
+              {ruangan.slice(0, limit).map((r, i) => (
+                <TableRow hover key={r._id}>
                   <TableCell>{i + 1}</TableCell>
-                  <TableCell>{customer.ruang}</TableCell>
+                  <TableCell>{r.ruang}</TableCell>
                   <TableCell>
                     <Stack direction="row" spacing={2}>
                       <Button
                         variant="outlined"
                         startIcon={<Trash2 />}
-                        onClick={() => deleteData(customer._id)}
+                        onClick={() => deleteData(r._id)}
                       >
                         Delete
                       </Button>
-                      <Button variant="contained" endIcon={<Edit />}>
+                      <Button
+                        onClick={() => handleEdit(r)}
+                        variant="contained"
+                        endIcon={<Edit />}
+                      >
                         Edit
                       </Button>
                     </Stack>

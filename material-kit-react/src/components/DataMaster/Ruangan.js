@@ -26,7 +26,7 @@ const Ruangan = (props) => (
       </Box>
     </CardContent>
     <Divider />
-    <Link to="/app/ruangan">
+    <Link to="/app/master/ruangan">
       <CardActions>
         <Button color="primary" fullWidth variant="text">
           Ruangan

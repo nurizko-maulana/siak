@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import PerfectScrollbar from 'react-perfect-scrollbar';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Card,
@@ -13,20 +15,21 @@ import {
   Stack
 } from '@material-ui/core';
 import { Edit, Trash2 } from 'react-feather';
+import { setEditMatkul } from '../../../store/action/masterAction';
 
 function CustomerListResults() {
   const [matkul, ssetMatkul] = useState([]);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const getMatkul = async () => {
-    const response = await fetch(
-      'https://limitless-ocean-86312.herokuapp.com/api/matkul'
-    );
+    const response = await fetch(`${process.env.REACT_APP_API}matakuliah`);
     const matkuliah = await response.json();
     ssetMatkul(matkuliah);
   };
 
   function deleteData(id) {
-    fetch(`https://limitless-ocean-86312.herokuapp.com/api/matkul/${id}`, {
+    fetch(`${process.env.REACT_APP_API}matakuliah/${id}`, {
       method: 'DELETE'
     }).then((result) => {
       result.json().then((res) => {
@@ -35,6 +38,13 @@ function CustomerListResults() {
       });
     });
   }
+
+  // eslint-disable-next-line no-unused-vars
+  const handleEdit = (data) => {
+    dispatch(setEditMatkul(data));
+    navigate('/app/master/matkul/edit');
+    console.log('edit matkul ok');
+  };
 
   useEffect(() => {
     getMatkul();
@@ -60,25 +70,31 @@ function CustomerListResults() {
                 <TableCell>No.</TableCell>
                 <TableCell>Kode Matakuliah</TableCell>
                 <TableCell>Matakuliah</TableCell>
+                <TableCell>SKS</TableCell>
                 <TableCell>Aksi</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {matkul.slice(0, limit).map((customer, i) => (
-                <TableRow hover key={customer.id}>
+              {matkul.slice(0, limit).map((data, i) => (
+                <TableRow hover key={data._id}>
                   <TableCell>{i + 1}</TableCell>
-                  <TableCell>{customer.id}</TableCell>
-                  <TableCell>{customer.matakuliah}</TableCell>
+                  <TableCell>{data.kode}</TableCell>
+                  <TableCell>{data.nama}</TableCell>
+                  <TableCell>{data.sks}</TableCell>
                   <TableCell>
                     <Stack direction="row" spacing={2}>
                       <Button
                         variant="outlined"
                         startIcon={<Trash2 />}
-                        onClick={() => deleteData(customer._id)}
+                        onClick={() => deleteData(data._id)}
                       >
                         Delete
                       </Button>
-                      <Button variant="contained" endIcon={<Edit />}>
+                      <Button
+                        variant="contained"
+                        onClick={() => handleEdit(data)}
+                        endIcon={<Edit />}
+                      >
                         Edit
                       </Button>
                     </Stack>
