@@ -223,7 +223,7 @@ const AccountProfileDetails = (props) => {
                 id="tags-outlined"
                 options={
                   values.programStudi && Object.keys(values.programStudi).length
-                    ? values.programStudi.id_kelas
+                    ? values.programStudi.kelas
                     : []
                 }
                 name="programStudi"

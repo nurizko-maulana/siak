@@ -61,18 +61,20 @@ const AccountProfileDetails = (props) => {
   };
 
   return (
-    <form autoComplete="off" noValidate {...props} onSubmit={(e) => submit(e)}>
+    <form autoComplete="off" {...props} onSubmit={(e) => submit(e)}>
       <Card>
         <CardHeader
           subheader="Lengkapi Data Berikut"
           title="Tambah Matakuliah"
         />
         <Divider />
+
         <CardContent>
           <Grid container spacing={3}>
             <Grid item md={12} xs={12}>
               <TextField
                 fullWidth
+                type="number"
                 label="Kode Matakuliah"
                 name="Kode"
                 onChange={(e) => setKodeMatkul(e.target.value)}
@@ -95,6 +97,7 @@ const AccountProfileDetails = (props) => {
             <Grid item md={12} xs={12}>
               <TextField
                 fullWidth
+                type="number"
                 label="Jumlah SKS"
                 name="mata kuliah"
                 onChange={(e) => setSKS(e.target.value)}

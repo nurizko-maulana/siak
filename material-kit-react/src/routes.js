@@ -81,7 +81,8 @@ const routes = [
         element: <TambahMatkul />
       },
       { path: 'absensi', element: <Absensi /> },
-      { path: 'formAbsensi', element: <TambahAbsensi /> },
+      { path: 'absensi/add', element: <TambahAbsensi /> },
+      { path: 'absensi/edit', element: <TambahAbsensi /> },
       { path: 'mahasiswa', element: <DataMahasiswa /> },
       { path: 'dataKehadiran', element: <DataKehadiran /> },
       { path: 'mahasiswa/add', element: <TambahMahasiswa /> },

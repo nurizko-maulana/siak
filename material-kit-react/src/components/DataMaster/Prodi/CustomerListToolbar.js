@@ -10,8 +10,8 @@ import {
 import { Search as SearchIcon, UserPlus } from 'react-feather';
 import { Link } from 'react-router-dom';
 
-const CustomerListToolbar = (props) => (
-  <Box {...props}>
+const CustomerListToolbar = () => (
+  <Box>
     <Box
       sx={{
         display: 'flex',

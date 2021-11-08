@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-underscore-dangle */
 import { useState, useEffect } from 'react';
 import {
@@ -19,13 +20,21 @@ import { updateData } from '../../../store/action/masterAction';
 const AccountProfileDetails = (props) => {
   const [selectedKelas, setKelas] = useState('');
   const [selectedMatkul, setSelectedMataKuliah] = useState([]);
+  const [selectedProdi, setSelectedProdi] = useState([]);
   const [matakuliah, setMataKuliah] = useState([]);
+  const [prodi, setProdi] = useState([]);
   const dispatch = useDispatch();
   const { kelas, edit } = useSelector((state) => state.master);
   // eslint-disable-next-line no-unused-vars
   const navigate = useNavigate();
 
   // eslint-disable-next-line no-unused-vars
+  const getProdi = () => {
+    axios.get(`${process.env.REACT_APP_API}programstudi`).then((res) => {
+      setProdi(res.data);
+      console.log('prodi', res);
+    });
+  };
   const getMataKuliah = () => {
     axios.get(`${process.env.REACT_APP_API}matakuliah`).then((res) => {
       setMataKuliah(res.data);
@@ -50,13 +59,15 @@ const AccountProfileDetails = (props) => {
       console.log({
         id: new Date().getTime(),
         kelas: selectedKelas,
-        matakuliah: selectedMatkul.map((matkul) => matkul._id)
+        matakuliah: selectedMatkul.map((matkul) => matkul._id),
+        id_programStudi: selectedProdi._id
       });
       axios
         .post(`${process.env.REACT_APP_API}kelas`, {
           id: new Date().getTime(),
           nama: selectedKelas,
-          id_matakuliah: selectedMatkul.map((matkul) => matkul._id)
+          id_matakuliah: selectedMatkul.map((matkul) => matkul._id),
+          id_programStudi: selectedProdi._id
         })
         .then((res) => {
           console.log(res);
@@ -67,6 +78,7 @@ const AccountProfileDetails = (props) => {
 
   useEffect(() => {
     getMataKuliah();
+    getProdi();
     if (edit) {
       setKelas(kelas.nama);
       setSelectedMataKuliah(kelas.id_matakuliah);
@@ -74,7 +86,7 @@ const AccountProfileDetails = (props) => {
     }
   }, []);
   return (
-    <form autoComplete="off" noValidate {...props} onSubmit={(e) => submit(e)}>
+    <form autoComplete="off" {...props} onSubmit={(e) => submit(e)}>
       <Card>
         <CardHeader subheader="Lengkapi Data Berikut" title="Tambah Kelas" />
         <Divider />
@@ -94,6 +106,22 @@ const AccountProfileDetails = (props) => {
             </Grid>
             <Grid item md={12} xs={12}>
               <Autocomplete
+                id="tags-outlined"
+                options={prodi}
+                getOptionLabel={(option) => option.nama || ''}
+                filterSelectedOptions
+                value={selectedProdi}
+                onChange={(e, value) => {
+                  setSelectedProdi(value);
+                  console.log('selected prodi', selectedProdi);
+                }}
+                renderInput={(params) => (
+                  <TextField {...params} required label="Program Studi" />
+                )}
+              />
+            </Grid>
+            <Grid item md={12} xs={12}>
+              <Autocomplete
                 multiple
                 id="tags-outlined"
                 options={matakuliah}
@@ -105,7 +133,7 @@ const AccountProfileDetails = (props) => {
                   console.log('selected matkul', selectedMatkul);
                 }}
                 renderInput={(params) => (
-                  <TextField {...params} label="Matakuliah" />
+                  <TextField {...params} requried label="Matakuliah" />
                 )}
               />
             </Grid>

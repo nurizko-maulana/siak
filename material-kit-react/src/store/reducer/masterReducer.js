@@ -4,20 +4,34 @@ import {
   SET_EDIT_MATKUL,
   SET_EDIT_PRODI,
   SET_EDIT_KELAS,
-  SET_EDIT_MAHASISWA
+  SET_EDIT_MAHASISWA,
+  SET_ALERT_FALSE,
+  SET_ALERT_TRUE,
+  SET_EDIT_ABSENSI
 } from '../types';
 
 const intialValue = {
+  absensi: {},
   ruangan: {},
   matkul: {},
   edit: false,
   prodi: {},
   kelas: {},
-  mahasiswa: {}
+  mahasiswa: {},
+  alert: {
+    data: {},
+    state: false
+  }
 };
 
 const masterReducer = (state = intialValue, action) => {
   switch (action.type) {
+    case SET_EDIT_ABSENSI:
+      return {
+        ...state,
+        absensi: action.payload,
+        edit: true
+      };
     case SET_EDIT_MAHASISWA:
       return {
         ...state,
@@ -47,6 +61,22 @@ const masterReducer = (state = intialValue, action) => {
       return { ...state, prodi: action.payload, edit: true };
     case SET_EDIT_KELAS:
       return { ...state, kelas: action.payload, edit: true };
+    case SET_ALERT_TRUE:
+      return {
+        ...state,
+        alert: {
+          state: true,
+          data: action.payload
+        }
+      };
+    case SET_ALERT_FALSE:
+      return {
+        ...state,
+        alert: {
+          state: false,
+          data: null
+        }
+      };
 
     default:
       return state;

@@ -31,7 +31,7 @@ const AccountProfileDetails = (props) => {
       const { _id } = ruangan;
       axios
         .put(`${process.env.REACT_APP_API}ruangan/${_id}`, {
-          ruang
+          nama: ruang
         })
         .then((res) => {
           console.log(res);
@@ -42,7 +42,7 @@ const AccountProfileDetails = (props) => {
       fetch(`${process.env.REACT_APP_API}ruangan`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: new Date().getTime(), ruang })
+        body: JSON.stringify({ id: new Date().getTime(), nama: ruang })
       }).then((result) => {
         result.json().then((res) => {
           navigate('/app/master/ruangan');
@@ -53,7 +53,7 @@ const AccountProfileDetails = (props) => {
   }
 
   return (
-    <form autoComplete="off" noValidate {...props} onSubmit={(e) => submit(e)}>
+    <form autoComplete="off" {...props} onSubmit={(e) => submit(e)}>
       <Card>
         <CardHeader
           subheader="Lengkapi Data Berikut"
@@ -68,6 +68,7 @@ const AccountProfileDetails = (props) => {
                 helperText="Masukan Kode Ruangan"
                 label="Ruangan"
                 name="ruang"
+                type="number"
                 onChange={(e) => setRuang(e.target.value)}
                 required
                 value={ruang}

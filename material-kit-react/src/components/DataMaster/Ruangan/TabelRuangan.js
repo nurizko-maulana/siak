@@ -1,3 +1,5 @@
+/* eslint-disable import/no-named-as-default-member */
+/* eslint-disable import/no-named-as-default */
 import { useState, useEffect } from 'react';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { useDispatch } from 'react-redux';
@@ -15,7 +17,11 @@ import {
   Stack
 } from '@material-ui/core';
 import { Edit, Trash2 } from 'react-feather';
-import { setEditRuangan } from '../../../store/action/masterAction';
+import {
+  setEditRuangan,
+  setAlertTrue
+} from '../../../store/action/masterAction';
+import Alert from '../../Alert';
 
 function CustomerListResults() {
   const [ruangan, setRuangan] = useState([]);
@@ -28,7 +34,7 @@ function CustomerListResults() {
     setRuangan(matkuliah);
   };
 
-  function deleteData(id) {
+  const deleteData = (id) => {
     fetch(`${process.env.REACT_APP_API}ruangan/${id}`, {
       method: 'DELETE'
     }).then((result) => {
@@ -37,7 +43,10 @@ function CustomerListResults() {
         getRuangan();
       });
     });
-  }
+  };
+  const handleClickOpen = (data) => {
+    dispatch(setAlertTrue(data));
+  };
 
   const handleEdit = (data) => {
     dispatch(setEditRuangan(data));
@@ -75,13 +84,13 @@ function CustomerListResults() {
               {ruangan.slice(0, limit).map((r, i) => (
                 <TableRow hover key={r._id}>
                   <TableCell>{i + 1}</TableCell>
-                  <TableCell>{r.ruang}</TableCell>
+                  <TableCell>{r.nama}</TableCell>
                   <TableCell>
                     <Stack direction="row" spacing={2}>
                       <Button
                         variant="outlined"
                         startIcon={<Trash2 />}
-                        onClick={() => deleteData(r._id)}
+                        onClick={() => handleClickOpen(r)}
                       >
                         Delete
                       </Button>
@@ -108,6 +117,10 @@ function CustomerListResults() {
         page={page}
         rowsPerPage={limit}
         rowsPerPageOptions={[5, 10, 25]}
+      />
+      <Alert
+        onConfirm={deleteData}
+        message="Anda yakin ingin mengapus ruangan ini?"
       />
     </Card>
   );

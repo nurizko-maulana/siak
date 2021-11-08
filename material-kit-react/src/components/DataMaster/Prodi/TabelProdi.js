@@ -1,7 +1,12 @@
+/* eslint-disable import/no-named-as-default */
+/* eslint-disable import/no-named-as-default-member */
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/jsx-curly-brace-presence */
 /* eslint-disable prefer-template */
+
 import { useState, useEffect } from 'react';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -16,11 +21,15 @@ import {
   Stack
 } from '@material-ui/core';
 import { Edit, Trash2 } from 'react-feather';
-import { setEditProdi } from '../../../store/action/masterAction';
+import { setEditProdi, setAlertTrue } from '../../../store/action/masterAction';
+
+import Alert from '../../Alert';
 
 function CustomerListResults() {
   const [prodi, setProdi] = useState([]);
+
   const dispatch = useDispatch();
+  const { alert } = useSelector((state) => state.master);
   const navigate = useNavigate();
 
   const getProdi = async () => {
@@ -29,7 +38,7 @@ function CustomerListResults() {
     setProdi(matkuliah);
   };
 
-  function deleteData(id) {
+  const deleteData = (id) => {
     fetch(`${process.env.REACT_APP_API}programStudi/${id}`, {
       method: 'DELETE'
     }).then((result) => {
@@ -38,7 +47,11 @@ function CustomerListResults() {
         getProdi();
       });
     });
-  }
+  };
+
+  const handleClickOpen = (data) => {
+    dispatch(setAlertTrue(data));
+  };
 
   const handleEdit = (data) => {
     dispatch(setEditProdi(data));
@@ -56,6 +69,8 @@ function CustomerListResults() {
     setLimit(event.target.value);
   };
 
+  useEffect(() => {}, [alert]);
+
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
@@ -69,8 +84,6 @@ function CustomerListResults() {
               <TableRow>
                 <TableCell>No.</TableCell>
                 <TableCell>Prodi</TableCell>
-                <TableCell>Kelas</TableCell>
-
                 <TableCell>Aksi</TableCell>
               </TableRow>
             </TableHead>
@@ -80,19 +93,11 @@ function CustomerListResults() {
                   <TableCell>{i + 1}</TableCell>
                   <TableCell>{p.nama}</TableCell>
                   <TableCell>
-                    {p.id_kelas.map((kelas) => {
-                      if (p.id_kelas.length > 1) {
-                        return kelas.nama + ' , ';
-                      }
-                      return kelas.nama;
-                    })}
-                  </TableCell>
-                  <TableCell>
                     <Stack direction="row" spacing={2}>
                       <Button
                         variant="outlined"
                         startIcon={<Trash2 />}
-                        onClick={() => deleteData(p._id)}
+                        onClick={() => handleClickOpen(p)}
                       >
                         Delete
                       </Button>
@@ -119,6 +124,10 @@ function CustomerListResults() {
         page={page}
         rowsPerPage={limit}
         rowsPerPageOptions={[5, 10, 25]}
+      />
+      <Alert
+        onConfirm={deleteData}
+        message={'Anda yakin ingin mengapus program studi ini?'}
       />
     </Card>
   );

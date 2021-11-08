@@ -1,24 +1,24 @@
 /* eslint-disable object-curly-newline */
 import { useEffect } from 'react';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {
-  Avatar,
+  // Avatar,
   Box,
   Divider,
   Drawer,
   Hidden,
-  List,
-  Typography
+  List
+  // Typography
 } from '@material-ui/core';
 import { CheckSquare, Folder, Server, Users as UsersIcon } from 'react-feather';
 import NavItem from './NavItem';
 
-const user = {
-  avatar: '/static/images/avatars/avatar_6.png',
-  jobTitle: 'Senior Developer',
-  name: 'Katarina Smith'
-};
+// const user = {
+//   avatar: '/static/images/avatars/avatar_6.png',
+//   jobTitle: 'Senior Developer',
+//   name: 'Katarina Smith'
+// };
 
 const items = [
   {
@@ -60,7 +60,7 @@ const DashboardSidebar = ({ onMobileClose, openMobile }) => {
         height: '100%'
       }}
     >
-      <Box
+      {/* <Box
         sx={{
           alignItems: 'center',
           display: 'flex',
@@ -84,7 +84,7 @@ const DashboardSidebar = ({ onMobileClose, openMobile }) => {
         <Typography color="textSecondary" variant="body2">
           {user.jobTitle}
         </Typography>
-      </Box>
+      </Box> */}
       <Divider />
       <Box sx={{ p: 2 }}>
         <List>

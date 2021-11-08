@@ -1,9 +1,10 @@
-import { useState } from 'react';
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-underscore-dangle */
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import {
-  Avatar,
   Box,
   Card,
   Table,
@@ -12,13 +13,21 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  Typography
+  Typography,
+  Button
 } from '@material-ui/core';
-import getInitials from '../../utils/getInitials';
+import axios from 'axios';
+import { Edit } from 'react-feather';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { setEditAbsensi } from '../../store/action/masterAction';
 
-const CustomerListResults = ({ customers, ...rest }) => {
+const CustomerListResults = ({ customers }) => {
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
+  const [absensi, setAbsensi] = useState(null);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleLimitChange = (event) => {
     setLimit(event.target.value);
@@ -28,8 +37,24 @@ const CustomerListResults = ({ customers, ...rest }) => {
     setPage(newPage);
   };
 
+  const getAbsensi = () => {
+    axios.get(`${process.env.REACT_APP_API}absensi`).then((res) => {
+      console.log(res);
+      setAbsensi(res.data);
+    });
+  };
+
+  const handleEdit = (data) => {
+    dispatch(setEditAbsensi(data));
+    navigate('/app/absensi/edit');
+  };
+
+  useEffect(() => {
+    getAbsensi();
+  }, []);
+
   return (
-    <Card {...rest}>
+    <Card>
       <PerfectScrollbar>
         <Box sx={{ minWidth: 1050 }}>
           <Table>
@@ -40,11 +65,12 @@ const CustomerListResults = ({ customers, ...rest }) => {
                 <TableCell>Kode Matkul</TableCell>
                 <TableCell>Tanggal</TableCell>
                 <TableCell>Ket</TableCell>
+                <TableCell>Detail</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {customers.slice(0, limit).map((customer) => (
-                <TableRow hover key={customer.id}>
+              {absensi?.slice(0, limit).map((data, index) => (
+                <TableRow hover key={data._id}>
                   <TableCell>
                     <Box
                       sx={{
@@ -52,21 +78,23 @@ const CustomerListResults = ({ customers, ...rest }) => {
                         display: 'flex'
                       }}
                     >
-                      <Avatar src={customer.avatarUrl} sx={{ mr: 2 }}>
-                        {getInitials(customer.name)}
-                      </Avatar>
                       <Typography color="textPrimary" variant="body1">
-                        {customer.name}
+                        {index + 1}
                       </Typography>
                     </Box>
                   </TableCell>
-                  <TableCell>{customer.email}</TableCell>
+                  <TableCell>{data.id_kelas.nama}</TableCell>
+                  <TableCell>{data?.id_matakuliah?.nama}</TableCell>
                   <TableCell>
-                    {`${customer.address.city}, ${customer.address.state}, ${customer.address.country}`}
+                    {moment(Date(data.tanggal)).format('DD/MM/YYYY')}
                   </TableCell>
-                  <TableCell>{customer.phone}</TableCell>
                   <TableCell>
-                    {moment(customer.createdAt).format('DD/MM/YYYY')}
+                    {moment(data.createdAt).format('DD/MM/YYYY')}
+                  </TableCell>
+                  <TableCell>
+                    <Button onClick={() => handleEdit(data)}>
+                      <Edit />
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
@@ -76,7 +104,7 @@ const CustomerListResults = ({ customers, ...rest }) => {
       </PerfectScrollbar>
       <TablePagination
         component="div"
-        count={customers.length}
+        count={absensi?.length}
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleLimitChange}
         page={page}

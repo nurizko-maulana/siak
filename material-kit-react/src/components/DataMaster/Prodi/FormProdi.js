@@ -20,7 +20,6 @@ import { updateData } from '../../../store/action/masterAction';
 const AccountProfileDetails = (props) => {
   const [selectedProdi, setProdi] = useState('');
   const [selectedKelas, setKelas] = useState([]);
-  const [listKelas, setListKelas] = useState([]);
   const { edit, prodi } = useSelector((state) => state.master);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -30,8 +29,7 @@ const AccountProfileDetails = (props) => {
     if (edit) {
       axios
         .put(`${process.env.REACT_APP_API}programStudi/${prodi._id}`, {
-          nama: selectedProdi,
-          id_kelas: selectedKelas.map((kelas) => kelas._id)
+          nama: selectedProdi
         })
         .then((res) => {
           console.log(res);
@@ -41,14 +39,12 @@ const AccountProfileDetails = (props) => {
     } else {
       console.log({
         id: new Date().getTime,
-        nama: selectedProdi,
-        id_kelas: selectedKelas.map((kelas) => kelas._id)
+        nama: selectedProdi
       });
       axios
         .post(`${process.env.REACT_APP_API}programStudi`, {
           id: new Date().getTime,
-          nama: selectedProdi,
-          id_kelas: selectedKelas.map((kelas) => kelas._id)
+          nama: selectedProdi
         })
         .then((res) => {
           console.log(res);
@@ -57,23 +53,14 @@ const AccountProfileDetails = (props) => {
     }
   };
 
-  const getKelas = () => {
-    axios.get(`${process.env.REACT_APP_API}kelas`).then((res) => {
-      setListKelas(res.data);
-    });
-  };
-
   useEffect(() => {
     if (edit) {
       setProdi(prodi.nama);
-      setKelas(prodi.id_kelas);
     }
-    getKelas();
-    console.log('list kelas', listKelas);
   }, []);
 
   return (
-    <form autoComplete="off" noValidate {...props} onSubmit={(e) => submit(e)}>
+    <form autoComplete="off" {...props} onSubmit={(e) => submit(e)}>
       <Card>
         <CardHeader
           subheader="Lengkapi Data Berikut"
@@ -92,23 +79,6 @@ const AccountProfileDetails = (props) => {
                 required
                 value={selectedProdi}
                 variant="outlined"
-              />
-            </Grid>
-            <Grid item md={12} xs={12}>
-              <Autocomplete
-                multiple
-                id="tags-outlined"
-                options={listKelas}
-                getOptionLabel={(option) => option.nama || ''}
-                filterSelectedOptions
-                value={selectedKelas}
-                onChange={(e, value) => {
-                  setKelas(value);
-                  console.log('selected kelas', selectedKelas);
-                }}
-                renderInput={(params) => (
-                  <TextField {...params} label="Kelas" />
-                )}
               />
             </Grid>
           </Grid>

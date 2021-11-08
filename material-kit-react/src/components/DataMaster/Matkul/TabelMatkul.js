@@ -15,7 +15,11 @@ import {
   Stack
 } from '@material-ui/core';
 import { Edit, Trash2 } from 'react-feather';
-import { setEditMatkul } from '../../../store/action/masterAction';
+import {
+  setEditMatkul,
+  setAlertTrue
+} from '../../../store/action/masterAction';
+import Alert from '../../Alert';
 
 function CustomerListResults() {
   const [matkul, ssetMatkul] = useState([]);
@@ -28,7 +32,7 @@ function CustomerListResults() {
     ssetMatkul(matkuliah);
   };
 
-  function deleteData(id) {
+  const deleteData = (id) => {
     fetch(`${process.env.REACT_APP_API}matakuliah/${id}`, {
       method: 'DELETE'
     }).then((result) => {
@@ -37,7 +41,11 @@ function CustomerListResults() {
         getMatkul();
       });
     });
-  }
+  };
+
+  const handleClickOpen = (data) => {
+    dispatch(setAlertTrue(data));
+  };
 
   // eslint-disable-next-line no-unused-vars
   const handleEdit = (data) => {
@@ -86,7 +94,7 @@ function CustomerListResults() {
                       <Button
                         variant="outlined"
                         startIcon={<Trash2 />}
-                        onClick={() => deleteData(data._id)}
+                        onClick={() => handleClickOpen(data)}
                       >
                         Delete
                       </Button>
@@ -113,6 +121,10 @@ function CustomerListResults() {
         page={page}
         rowsPerPage={limit}
         rowsPerPageOptions={[5, 10, 25]}
+      />
+      <Alert
+        onConfirm={deleteData}
+        message="Anda yakin ingin menghapus data matakuliah ini?"
       />
     </Card>
   );

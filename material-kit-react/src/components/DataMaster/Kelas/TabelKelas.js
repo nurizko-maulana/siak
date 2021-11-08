@@ -18,7 +18,9 @@ import { Edit, Trash2 } from 'react-feather';
 
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { setEditKelas } from '../../../store/action/masterAction';
+import { setEditKelas, setAlertTrue } from '../../../store/action/masterAction';
+
+import Alert from '../../Alert';
 
 function CustomerListResults() {
   const [kelas, setKelas] = useState([]);
@@ -34,15 +36,17 @@ function CustomerListResults() {
     });
     const kelass = await response.json();
     setKelas(kelass);
-    console.log('kelas', kelas);
   };
 
   const handleEdit = (data) => {
     dispatch(setEditKelas(data));
     navigate('/app/master/kelas/edit');
   };
+  const handleClickOpen = (data) => {
+    dispatch(setAlertTrue(data));
+  };
 
-  function deleteData(id) {
+  const deleteData = (id) => {
     fetch(`${process.env.REACT_APP_API}kelas/${id}`, {
       method: 'DELETE'
     }).then((result) => {
@@ -51,7 +55,7 @@ function CustomerListResults() {
         getKelas();
       });
     });
-  }
+  };
 
   useEffect(() => {
     getKelas();
@@ -77,6 +81,7 @@ function CustomerListResults() {
               <TableRow>
                 <TableCell>No.</TableCell>
                 <TableCell>Kelas</TableCell>
+                <TableCell>Program Studi</TableCell>
                 <TableCell>Matakuliah</TableCell>
                 <TableCell>Aksi</TableCell>
               </TableRow>
@@ -86,6 +91,7 @@ function CustomerListResults() {
                 <TableRow hover key={k._id}>
                   <TableCell>{i + 1}</TableCell>
                   <TableCell>{k.nama}</TableCell>
+                  <TableCell>{k.id_programStudi?.nama}</TableCell>
                   <TableCell>
                     {k.id_matakuliah.map((matkul) => {
                       if (k.id_matakuliah.length > 1) {
@@ -99,7 +105,7 @@ function CustomerListResults() {
                       <Button
                         variant="outlined"
                         startIcon={<Trash2 />}
-                        onClick={() => deleteData(k._id)}
+                        onClick={() => handleClickOpen(k)}
                       >
                         Delete
                       </Button>
@@ -126,6 +132,10 @@ function CustomerListResults() {
         page={page}
         rowsPerPage={limit}
         rowsPerPageOptions={[5, 10, 25]}
+      />
+      <Alert
+        onConfirm={deleteData}
+        message="Anda yakin ingin menghapus data kelas ini?"
       />
     </Card>
   );
