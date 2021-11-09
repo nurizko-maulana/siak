@@ -10,35 +10,25 @@ import {
   Box,
   Button,
   Card,
-  CardContent,
   CardHeader,
   Divider,
-  Grid,
-  TextField,
-  Autocomplete,
-  Table,
-  TableBody,
   TableCell,
   TableHead,
   TablePagination,
   TableRow,
+  Table,
+  TableBody,
   Typography,
-  Stack,
   Radio,
   RadioGroup,
   FormControlLabel,
   FormControl
 } from '@material-ui/core';
 import { useDeepCompareEffectNoCheck } from 'use-deep-compare-effect';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import idLocale from 'date-fns/locale/id';
-import TimePicker from '@mui/lab/TimePicker';
+
 import FormCardContent from './FormCardContent';
 
 const AccountProfileDetails = (props) => {
-  const matkulContainer = useRef();
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
   const navigate = useNavigate();
@@ -88,7 +78,8 @@ const AccountProfileDetails = (props) => {
   const handleChangeKehadiran = (e, index) => {
     setValues((v) => {
       const p = { ...v };
-      p.mahasiswa[index].keterangan = e.target.value === 'hadir';
+      p.mahasiswa[index].keterangan =
+        e.target.value === 'hadir' ? 'hadir' : 'absen';
       console.log(p);
       return {
         ...p
@@ -125,16 +116,17 @@ const AccountProfileDetails = (props) => {
   };
 
   useEffect(() => {
+    getProdi();
     if (edit) {
       handleChange(absensi.jam.masuk, 'start');
       handleChange(absensi.jam.keluar, 'end');
-      handleChange(absensi.id_programStudi, 'prodi');
-      // handleChange(absensi.id_kelas, 'kelas');
-      // handleChange(absensi.id_matakuliah, 'matkul');
+      handleChange(absensi.id_kelas.id_programStudi, 'prodi');
+      handleChange(absensi.id_kelas, 'kelas');
+      handleChange(absensi.id_matakuliah, 'matkul');
       handleChange(absensi.id_matakuliah.kode, 'kode');
       handleChange(absensi.id_matakuliah.sks, 'sks');
       handleChange(absensi.tanggal, 'tanggal');
-      handleChange(absensi.mahasiswa, 'mahasiswa');
+      handleChange(absensi.absensi, 'mahasiswa');
     } else {
       getProdi();
     }
@@ -193,7 +185,7 @@ const AccountProfileDetails = (props) => {
                       <TableCell>{data.nama}</TableCell>
 
                       <TableCell>
-                        <FormControl component="fieldset">
+                        <FormControl disabled={edit} component="fieldset">
                           <RadioGroup
                             row
                             aria-label="gender"
@@ -239,9 +231,20 @@ const AccountProfileDetails = (props) => {
             p: 2
           }}
         >
-          <Button color="primary" type="submit" variant="contained">
-            Save details
-          </Button>
+          {edit ? (
+            <Button
+              color="primary"
+              onClick={() => navigate('/app/absensi')}
+              on
+              variant="contained"
+            >
+              Back
+            </Button>
+          ) : (
+            <Button color="primary" type="submit" variant="contained">
+              Save details
+            </Button>
+          )}
         </Box>
       </Card>
     </form>

@@ -12,65 +12,109 @@ import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import idLocale from 'date-fns/locale/id';
 import TimePicker from '@mui/lab/TimePicker';
+import { useSelector } from 'react-redux';
 
+// eslint-disable-next-line object-curly-newline
 function FormCardContent({ prodi, handleChange, values }) {
+  const { edit } = useSelector((state) => state.master);
   return (
     <CardContent>
       <Grid container spacing={3}>
-        <Grid item md={6} xs={12}>
-          <Autocomplete
-            id="tags-outlined"
-            options={prodi}
-            getOptionLabel={(option) => option.nama || ''}
-            filterSelectedOptions
-            value={values.prodi}
-            onChange={(e, value) => {
-              handleChange(value, 'prodi');
-              handleChange(null, 'kelas');
-            }}
-            renderInput={(params) => <TextField {...params} label="Prodi" />}
-          />
-        </Grid>
-        <Grid item md={6} xs={12}>
-          <Autocomplete
-            id="tags-outlined"
-            options={
-              values.prodi && Object.keys(values.prodi).length
-                ? values.prodi.kelas
-                : []
-            }
-            getOptionLabel={(option) => option.nama || ''}
-            filterSelectedOptions
-            value={values.kelas}
-            onChange={(e, value) => {
-              handleChange(value, 'kelas');
-              handleChange(null, 'matkul');
-              handleChange(value.mahasiswa, 'mahasiswa');
-              console.log('selected kelas', value);
-            }}
-            renderInput={(params) => (
-              <TextField {...params} label="Kelas" fullWidth />
-            )}
-          />
-        </Grid>
-        <Grid item md={6} xs={12}>
-          <Autocomplete
-            id="tags-outlined"
-            options={
-              values.kelas && Object.keys(values.kelas).length
-                ? values.kelas.matakuliah
-                : []
-            }
-            getOptionLabel={(option) => option.nama || ''}
-            filterSelectedOptions
-            value={values.matkul}
-            onChange={(e, value) => {
-              handleChange(value, 'matkul');
-              console.log('selected matkul', value);
-            }}
-            renderInput={(params) => <TextField {...params} label="Matkul" />}
-          />
-        </Grid>
+        {edit ? (
+          <>
+            <Grid item md={6} xs={12}>
+              <TextField
+                fullWidth
+                label="Program Studi"
+                disabled
+                InputLabelProps={{ shrink: true }}
+                value={values.prodi?.nama}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <TextField
+                fullWidth
+                label="Kelas"
+                disabled
+                InputLabelProps={{ shrink: true }}
+                value={values.kelas?.nama}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <TextField
+                fullWidth
+                label=" Matakuliah"
+                disabled
+                InputLabelProps={{ shrink: true }}
+                value={values.matkul?.nama}
+                variant="outlined"
+              />
+            </Grid>
+          </>
+        ) : (
+          <>
+            <Grid item md={6} xs={12}>
+              <Autocomplete
+                id="tags-outlined"
+                options={prodi}
+                getOptionLabel={(option) => option.nama || ''}
+                filterSelectedOptions
+                value={values.prodi}
+                onChange={(e, value) => {
+                  handleChange(value, 'prodi');
+                  handleChange(null, 'kelas');
+                }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Prodi" />
+                )}
+              />
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <Autocomplete
+                id="tags-outlined"
+                options={
+                  values.prodi && Object.keys(values.prodi).length
+                    ? values.prodi.kelas
+                    : []
+                }
+                getOptionLabel={(option) => option.nama || ''}
+                filterSelectedOptions
+                value={values.kelas}
+                onChange={(e, value) => {
+                  handleChange(value, 'kelas');
+                  handleChange(null, 'matkul');
+                  handleChange(value.mahasiswa, 'mahasiswa');
+                  console.log('selected kelas', value);
+                }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Kelas" fullWidth />
+                )}
+              />
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <Autocomplete
+                id="tags-outlined"
+                options={
+                  values.kelas && Object.keys(values.kelas).length
+                    ? values.kelas.matakuliah
+                    : []
+                }
+                getOptionLabel={(option) => option.nama || ''}
+                filterSelectedOptions
+                value={values.matkul}
+                onChange={(e, value) => {
+                  handleChange(value, 'matkul');
+                  console.log('selected matkul', value);
+                }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Matkul" />
+                )}
+              />
+            </Grid>
+          </>
+        )}
         <Grid item md={6} xs={12}>
           <TextField
             fullWidth
@@ -128,6 +172,7 @@ function FormCardContent({ prodi, handleChange, values }) {
 FormCardContent.propTypes = {
   prodi: PropTypes.array,
   handleChange: PropTypes.func,
-  values: PropTypes.object
+  values: PropTypes.object,
+  edit: PropTypes.bool
 };
 export default FormCardContent;
