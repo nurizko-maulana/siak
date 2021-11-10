@@ -19,7 +19,11 @@ import {
 } from '@material-ui/core';
 import axios from 'axios';
 import { Edit, Trash2 } from 'react-feather';
-import { setEditMahasiswa } from '../../store/action/masterAction';
+import {
+  setEditMahasiswa,
+  setAlertTrue
+} from '../../store/action/masterAction';
+import Alert from '../Alert';
 
 const TabelMahasiswa = ({ customers }) => {
   const [limit, setLimit] = useState(10);
@@ -35,6 +39,11 @@ const TabelMahasiswa = ({ customers }) => {
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
+
+  const handleClickOpen = (data) => {
+    dispatch(setAlertTrue(data));
+  };
+
   const getMahasiswa = () => {
     axios.get(`${process.env.REACT_APP_API}mahasiswa`).then((res) => {
       setMahasiswa(res.data);
@@ -109,7 +118,7 @@ const TabelMahasiswa = ({ customers }) => {
                       <Button
                         variant="outlined"
                         startIcon={<Trash2 />}
-                        onClick={() => deleteData(data._id)}
+                        onClick={() => handleClickOpen(data)}
                       >
                         Delete
                       </Button>
@@ -136,6 +145,10 @@ const TabelMahasiswa = ({ customers }) => {
         page={page}
         rowsPerPage={limit}
         rowsPerPageOptions={[5, 10, 25]}
+      />
+      <Alert
+        onConfirm={deleteData}
+        message="Anda yakin ingin menghapus data mahasiswa ini?"
       />
     </Card>
   );

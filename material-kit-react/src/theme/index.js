@@ -1,6 +1,13 @@
 import { createTheme } from '@material-ui/core';
 
 const theme = createTheme({
+  root: {
+    '&.Mui-disabled': {
+      color: '#1976d2',
+      opacity: 0.5
+    },
+    '&.Mui-disabled:hover': { background: '#1976d2' }
+  },
   palette: {
     background: {
       default: '#f4f6f8',
