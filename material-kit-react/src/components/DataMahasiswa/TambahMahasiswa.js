@@ -193,7 +193,10 @@ const AccountProfileDetails = (props) => {
         alamat: mahasiswa.alamat,
         noTelp: mahasiswa.noTelp,
         alamatOrtu: mahasiswa.alamatOrtu,
-        jalan: mahasiswa.jalan
+        jalan: mahasiswa.jalan,
+        firstName: mahasiswa.firstName,
+        lastName: mahasiswa.lastName,
+        image: `${process.env.REACT_APP_API_IMAGE + mahasiswa.foto}`
       }));
     }
   }, []);
@@ -442,28 +445,13 @@ const AccountProfileDetails = (props) => {
                       name="programStudi"
                       getOptionLabel={(option) => option.nama || ''}
                       filterSelectedOptions
-                      disabled={
-                        !(
-                          values.programStudi &&
-                          Object.keys(values.programStudi).length
-                        )
-                      }
                       required
                       value={values.kelas}
                       onChange={(e, value) => {
                         handleChangeAutocomplete('kelas', value);
                       }}
                       renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="Kelas"
-                          disabled={
-                            !(
-                              values.programStudi &&
-                              Object.keys(values.programStudi).length
-                            )
-                          }
-                        />
+                        <TextField {...params} label="Kelas" />
                       )}
                     /> */}
                   </Grid>
