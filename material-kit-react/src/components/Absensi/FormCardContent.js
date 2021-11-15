@@ -146,11 +146,13 @@ function FormCardContent({ prodi, handleChange, values }) {
                 label="Jam Mulai"
                 value={values.start}
                 onChange={(e) => handleChange(e, 'start')}
+                disabled={edit}
                 renderInput={(params) => <TextField {...params} />}
               />
               <TimePicker
                 label="Jam Selesai"
                 value={values.end}
+                disabled={edit}
                 onChange={(e) => handleChange(e, 'end')}
                 renderInput={(params) => <TextField {...params} />}
               />
@@ -159,6 +161,7 @@ function FormCardContent({ prodi, handleChange, values }) {
                 inputFormat="dd/MM/yyyy"
                 value={values.from}
                 name="from"
+                disabled={edit}
                 onChange={(e) => handleChange(e, 'from')}
                 sx={{ width: 100 }}
                 renderInput={(params) => <TextField {...params} />}
