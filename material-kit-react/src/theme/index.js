@@ -19,7 +19,11 @@ const theme = createTheme({
     },
     text: {
       primary: '#172b4d',
-      secondary: '#6b778c'
+      secondary: '#6b778c',
+      disabled: '#172b4d'
+    },
+    action: {
+      disabled: '#5664d2'
     }
   },
   shadows: [
