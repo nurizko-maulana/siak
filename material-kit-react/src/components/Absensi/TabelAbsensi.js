@@ -86,7 +86,7 @@ const CustomerListResults = ({ customers }) => {
                   <TableCell>{data.id_kelas.nama}</TableCell>
                   <TableCell>{data?.id_matakuliah?.nama}</TableCell>
                   <TableCell>
-                    {moment(Date(data.tanggal)).format('DD/MM/YYYY')}
+                    {moment(new Date(+data.tanggal)).format('DD/MM/YYYY')}
                   </TableCell>
                   <TableCell>
                     {moment(data.createdAt).format('DD/MM/YYYY')}
