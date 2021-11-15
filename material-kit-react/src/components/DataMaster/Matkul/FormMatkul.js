@@ -12,7 +12,8 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { updateData } from '../../../store/action/masterAction';
+import { updateData, setAlertTrue } from '../../../store/action/masterAction';
+import AlertMessage from '../../AlertMessage';
 
 const AccountProfileDetails = (props) => {
   const [selectedMatkul, setMatkul] = useState('');
@@ -22,6 +23,10 @@ const AccountProfileDetails = (props) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { matkul, edit } = useSelector((state) => state.master);
+
+  const handleClickOpen = (data) => {
+    dispatch(setAlertTrue(data));
+  };
 
   useEffect(() => {
     if (edit) {
@@ -44,6 +49,14 @@ const AccountProfileDetails = (props) => {
           console.log(res);
           navigate('/app/master/matkul');
           dispatch(updateData());
+        })
+        .catch((err) => {
+          console.log(err.response.status);
+
+          if (err.response.status === 412) {
+            handleClickOpen();
+            console.log('ok');
+          }
         });
     } else {
       axios
@@ -54,8 +67,22 @@ const AccountProfileDetails = (props) => {
           sks: selectedSKS
         })
         .then((res) => {
-          navigate('/app/master/matkul');
-          console.warn('res', res);
+          // console.log(res);
+          if (res.status === '412') {
+            console.log(res);
+            handleClickOpen();
+          } else {
+            navigate('/app/master/matkul');
+            console.warn('res', res);
+          }
+        })
+        .catch((err) => {
+          console.log(err.response.status);
+
+          if (err.response.status === 412) {
+            handleClickOpen();
+            console.log('ok');
+          }
         });
     }
   };
@@ -122,6 +149,7 @@ const AccountProfileDetails = (props) => {
           </Button>
         </Box>
       </Card>
+      <AlertMessage message="Kode kelas sudah terdaftar" />
     </form>
   );
 };

@@ -12,7 +12,8 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { updateData } from '../../../store/action/masterAction';
+import { updateData, setAlertTrue } from '../../../store/action/masterAction';
+import AlertMessage from '../../AlertMessage';
 
 const AccountProfileDetails = (props) => {
   const navigate = useNavigate();
@@ -25,6 +26,11 @@ const AccountProfileDetails = (props) => {
       setRuang(ruangan.ruang);
     }
   }, [dispatch, edit, ruangan]);
+
+  const handleClickOpen = (data) => {
+    dispatch(setAlertTrue(data));
+  };
+
   function submit(e) {
     e.preventDefault();
     if (edit) {
@@ -37,20 +43,41 @@ const AccountProfileDetails = (props) => {
           console.log(res);
           navigate('/app/master/ruangan');
           dispatch(updateData());
+        })
+        .catch((err) => {
+          console.log(err.response.status);
+
+          if (err.response.status === 412) {
+            handleClickOpen();
+            console.log('ok');
+          }
         });
     } else {
-      fetch(`${process.env.REACT_APP_API}ruangan`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: new Date().getTime(), nama: ruang })
-      }).then((result) => {
-        result.json().then((res) => {
+      axios
+        .post(`${process.env.REACT_APP_API}ruangan`, {
+          nama: ruang
+        })
+        .then((res) => {
+          console.log(res);
           navigate('/app/master/ruangan');
-          console.warn('res', res);
+          dispatch(updateData());
+        })
+        .catch((err) => {
+          console.log(err.response.status);
+
+          if (err.response.status === 412) {
+            handleClickOpen();
+            console.log('ok');
+          }
         });
-      });
     }
   }
+
+  useEffect(() => {
+    if (edit) {
+      setRuang(ruangan.nama);
+    }
+  });
 
   return (
     <form autoComplete="off" {...props} onSubmit={(e) => submit(e)}>
@@ -91,6 +118,7 @@ const AccountProfileDetails = (props) => {
           </Button>
         </Box>
       </Card>
+      <AlertMessage message="Ruangan sudah terdaftar" />
     </form>
   );
 };

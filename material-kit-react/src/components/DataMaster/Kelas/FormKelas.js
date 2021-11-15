@@ -15,7 +15,8 @@ import {
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { updateData } from '../../../store/action/masterAction';
+import { updateData, setAlertTrue } from '../../../store/action/masterAction';
+import AlertMessage from '../../AlertMessage';
 
 const AccountProfileDetails = (props) => {
   const [selectedKelas, setKelas] = useState('');
@@ -41,6 +42,9 @@ const AccountProfileDetails = (props) => {
       console.log(res);
     });
   };
+  const handleClickOpen = (data) => {
+    dispatch(setAlertTrue(data));
+  };
 
   const submit = (e) => {
     e.preventDefault();
@@ -54,6 +58,14 @@ const AccountProfileDetails = (props) => {
           console.log(res);
           dispatch(updateData());
           navigate('/app/master/kelas');
+        })
+        .catch((err) => {
+          console.log(err.response.status);
+
+          if (err.response.status === 412) {
+            handleClickOpen();
+            console.log('ok');
+          }
         });
     } else {
       console.log({
@@ -72,6 +84,14 @@ const AccountProfileDetails = (props) => {
         .then((res) => {
           console.log(res);
           navigate('/app/master/kelas');
+        })
+        .catch((err) => {
+          console.log(err.response.status);
+
+          if (err.response.status === 412) {
+            handleClickOpen();
+            console.log('ok');
+          }
         });
     }
   };
@@ -81,6 +101,7 @@ const AccountProfileDetails = (props) => {
     getProdi();
     if (edit) {
       setKelas(kelas.nama);
+      setSelectedProdi(kelas.id_programStudi);
       setSelectedMataKuliah(kelas.id_matakuliah);
       console.log('matkul', selectedMatkul);
     }
@@ -152,6 +173,7 @@ const AccountProfileDetails = (props) => {
           </Button>
         </Box>
       </Card>
+      <AlertMessage message="Kelas sudah terdaftar" />
     </form>
   );
 };

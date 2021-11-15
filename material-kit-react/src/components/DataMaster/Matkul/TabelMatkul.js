@@ -14,6 +14,7 @@ import {
   Button,
   Stack
 } from '@material-ui/core';
+import axios from 'axios';
 import { Edit, Trash2 } from 'react-feather';
 import {
   setEditMatkul,
@@ -27,9 +28,9 @@ function CustomerListResults() {
   const navigate = useNavigate();
 
   const getMatkul = async () => {
-    const response = await fetch(`${process.env.REACT_APP_API}matakuliah`);
-    const matkuliah = await response.json();
-    ssetMatkul(matkuliah);
+    axios.get(`${process.env.REACT_APP_API}matakuliah`).then((res) => {
+      ssetMatkul(res.data);
+    });
   };
 
   const deleteData = (id) => {

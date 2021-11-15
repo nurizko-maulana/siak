@@ -25,7 +25,7 @@ import { setEditAbsensi } from '../../store/action/masterAction';
 const CustomerListResults = ({ customers }) => {
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
-  const [absensi, setAbsensi] = useState(null);
+  const [absensi, setAbsensi] = useState([]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 

@@ -37,18 +37,24 @@ const AccountProfileDetails = (props) => {
     nim: '',
     nik: '',
     nama: '',
+    firstName: '',
+    lastName: '',
     jenisKelamin: '',
     programStudi: {},
     kelas: {},
     email: '',
     alamat: '',
+    jalan: '',
     noTelp: '',
     alamatOrtu: '',
     file: null,
     image: null,
     provinsi: [],
     kabupaten: [],
-    kecamatan: []
+    kecamatan: [],
+    provinsiOrtu: [],
+    kabupatenOrtu: [],
+    kecamatanOrtu: []
   });
 
   const [selectedProvince, setProvince] = useState({});
@@ -84,6 +90,9 @@ const AccountProfileDetails = (props) => {
       form.append('file', values.file);
       form.append('id_programStudi', values.programStudi._id);
       form.append('id_kelas', values.kelas._id);
+      form.append('provinsi', selectedProvince.nama);
+      form.append('kecamatan', selectedKabupaten.nama);
+      form.append('kabupaten', selectedKabupaten.nama);
       axios
         .put(`${process.env.REACT_APP_API}mahasiswa/${mahasiswa._id}`, form, {
           headers: {
@@ -100,6 +109,9 @@ const AccountProfileDetails = (props) => {
       form.append('file', values.file);
       form.append('id_programStudi', values.programStudi._id);
       form.append('id_kelas', values.kelas._id);
+      form.append('provinsi', selectedProvince.nama);
+      form.append('kecamatan', selectedKabupaten.nama);
+      form.append('kabupaten', selectedKabupaten.nama);
       axios
         .post(`${process.env.REACT_APP_API}mahasiswa/`, form, {
           headers: {
@@ -180,7 +192,8 @@ const AccountProfileDetails = (props) => {
         email: mahasiswa.email,
         alamat: mahasiswa.alamat,
         noTelp: mahasiswa.noTelp,
-        alamatOrtu: mahasiswa.alamatOrtu
+        alamatOrtu: mahasiswa.alamatOrtu,
+        jalan: mahasiswa.jalan
       }));
     }
   }, []);
@@ -193,252 +206,270 @@ const AccountProfileDetails = (props) => {
           title={edit ? 'Edit Data Mahasiswa' : 'Tambah Data Mahasiswa'}
         />
         <Divider />
-        <Container>
-          <Grid lg={8} md={9} xs={10}>
-            <CardContent>
-              <Grid container spacing={3}>
-                <Grid item md={6} xs={12}>
-                  <TextField
-                    fullWidth
-                    label="NIM"
-                    name="nim"
-                    type="number"
-                    onChange={handleChange}
-                    required
-                    value={values.nim}
-                    variant="outlined"
-                  />
-                </Grid>
-                <Grid item md={6} xs={12}>
-                  <TextField
-                    fullWidth
-                    label="Nama"
-                    name="nama"
-                    onChange={handleChange}
-                    required
-                    value={values.nama}
-                    variant="outlined"
-                  />
-                </Grid>
-                <Grid item md={6} xs={12}>
-                  <TextField
-                    fullWidth
-                    label="NIK"
-                    name="nik"
-                    type="number"
-                    onChange={handleChange}
-                    required
-                    value={values.nik}
-                    variant="outlined"
-                  />
-                </Grid>
-                <Grid item md={6} xs={12}>
-                  <FormControl required component="fieldset">
-                    <FormLabel component="legend">Gender</FormLabel>
-                    <RadioGroup
-                      row
-                      aria-label="gender"
+        <Container maxWidth="lg">
+          <Grid container spacing={3}>
+            <Grid item lg={8} md={9} xs={12}>
+              <CardContent>
+                <Grid container spacing={3}>
+                  <Grid item md={12} xs={12}>
+                    <TextField
+                      fullWidth
+                      label="NIM"
+                      name="nim"
+                      type="number"
                       onChange={handleChange}
-                      name="jenisKelamin"
-                    >
-                      <FormControlLabel
-                        value="Laki-laki"
-                        control={<Radio />}
-                        label="Laki-laki"
+                      required
+                      value={values.nim}
+                      variant="outlined"
+                    />
+                  </Grid>
+                  <Grid item md={6} xs={12}>
+                    <TextField
+                      fullWidth
+                      label="Nama Depan"
+                      name="firstName"
+                      onChange={handleChange}
+                      required
+                      value={values.firstName}
+                      variant="outlined"
+                    />
+                  </Grid>
+                  <Grid item md={6} xs={12}>
+                    <TextField
+                      fullWidth
+                      label="Nama Belakang"
+                      name="lastName"
+                      onChange={handleChange}
+                      required
+                      value={values.lastName}
+                      variant="outlined"
+                    />
+                  </Grid>
+                  <Grid item md={12} xs={12}>
+                    <TextField
+                      fullWidth
+                      label="Email "
+                      name="email"
+                      type="email"
+                      onChange={handleChange}
+                      required
+                      value={values.email}
+                      variant="outlined"
+                    />
+                  </Grid>
+                  <Grid item spacing={3} md={12} xs={12}>
+                    <Stack direction="row" spacing={2}>
+                      <Autocomplete
+                        getOptionLabel={(p) => p.nama || ''}
+                        disablePortal
+                        id="combo-box-demo"
+                        options={values.provinsi}
+                        value={selectedProvince}
+                        isOptionEqualToValue={(opt) =>
+                          selectedProvince.id === opt.id
+                        }
+                        onChange={(event, value) => {
+                          if (value === null) {
+                            setProvince('');
+                          } else {
+                            setProvince(value);
+                            loadKabupaten(value.id);
+                          }
+                          setKabupaten('');
+                          setKecamatan('');
+                        }}
+                        sx={{ width: 300, marginBottom: '1em' }}
+                        renderInput={(params) => (
+                          <TextField {...params} label="Provinsi" />
+                        )}
                       />
-                      <FormControlLabel
-                        value="Perempuan"
-                        control={<Radio />}
-                        label="Perempuan"
+                      <Autocomplete
+                        getOptionLabel={(p) => p.nama || ''}
+                        disablePortal
+                        value={selectedKabupaten}
+                        isOptionEqualToValue={(opt) =>
+                          selectedKabupaten.id === opt.id
+                        }
+                        onChange={(event, value) => {
+                          if (value === null) {
+                            setKabupaten('');
+                          } else {
+                            setKabupaten(value);
+                            loadKecamatan(value.id);
+                          }
+                          setKecamatan('');
+                        }}
+                        id="combo-box-demo"
+                        options={values.kabupaten}
+                        sx={{ width: 300, marginBottom: '1em' }}
+                        renderInput={(params) => (
+                          <TextField {...params} label="Kabupaten" />
+                        )}
                       />
-                    </RadioGroup>
-                  </FormControl>
+                      <Autocomplete
+                        getOptionLabel={(p) => p.nama || ''}
+                        disablePortal
+                        id="combo-box-demo"
+                        options={values.kecamatan}
+                        value={selectedKecamatan}
+                        isOptionEqualToValue={(opt) =>
+                          selectedKecamatan.id === opt.id
+                        }
+                        onChange={(event, value) => {
+                          if (value === null) {
+                            setKecamatan('');
+                          } else {
+                            setKecamatan(value);
+                          }
+                        }}
+                        sx={{ width: 300, marginBottom: '1em' }}
+                        renderInput={(params) => (
+                          <TextField {...params} label="Kecamatan" />
+                        )}
+                      />
+                    </Stack>
+                  </Grid>
+                  <Grid item md={12} xs={12}>
+                    <TextField
+                      fullWidth
+                      label="Jalan"
+                      name="jalan"
+                      onChange={handleChange}
+                      required
+                      value={values.jalan}
+                      variant="outlined"
+                    />
+                  </Grid>
+                  <Grid item md={12} xs={12}>
+                    <TextField
+                      fullWidth
+                      required
+                      label="Nomor Telpon"
+                      name="noTelp"
+                      onChange={handleChange}
+                      type="number"
+                      value={values.noTelp}
+                      variant="outlined"
+                    />
+                  </Grid>
                 </Grid>
-                <Grid item md={6} xs={12}>
-                  <Autocomplete
-                    id="tags-outlined"
-                    fullWidth
-                    options={listProdi}
-                    name="programStudi"
-                    getOptionLabel={(option) => option.nama || ''}
-                    filterSelectedOptions
-                    required
-                    value={values.programStudi}
-                    onChange={(e, value) => {
-                      handleChangeAutocomplete('programStudi', value);
-                      handleChangeAutocomplete('kelas', '');
-                      console.log('prodi', e);
-                    }}
-                    renderInput={(params) => (
-                      <TextField {...params} label="Program Studi" />
-                    )}
-                  />
-                </Grid>
-                <Grid item md={6} xs={12}>
-                  <Autocomplete
-                    id="tags-outlined"
-                    options={
-                      values.programStudi &&
-                      Object.keys(values.programStudi).length
-                        ? values.programStudi.kelas
-                        : []
-                    }
-                    name="programStudi"
-                    getOptionLabel={(option) => option.nama || ''}
-                    filterSelectedOptions
-                    disabled={
-                      !(
+              </CardContent>
+            </Grid>
+            <Grid item lg={4} md={6} xs={12}>
+              <CardContent>
+                <Grid container spacing={3}>
+                  <Grid item md={12} xs={12}>
+                    <Typography sx={{ py: 1.25 }}>Foto Profil</Typography>
+                    {values.image ? (
+                      <img
+                        alt="foto profil"
+                        src={values.image}
+                        width="200"
+                        height="200"
+                      />
+                    ) : null}
+                    <input
+                      onChange={(e) => handleSelectFile(e)}
+                      accept="image/*"
+                      id="contained-button-file"
+                      type="file"
+                    />
+                  </Grid>
+                  <Grid item md={12} xs={12}>
+                    <TextField
+                      fullWidth
+                      label="NIK"
+                      name="nik"
+                      type="number"
+                      onChange={handleChange}
+                      required
+                      value={values.nik}
+                      variant="outlined"
+                    />
+                  </Grid>
+                  <Grid item md={12} xs={12}>
+                    <FormControl required component="fieldset">
+                      <FormLabel component="legend">Gender</FormLabel>
+                      <RadioGroup
+                        row
+                        aria-label="gender"
+                        onChange={handleChange}
+                        name="jenisKelamin"
+                        value={values.jenisKelamin}
+                      >
+                        <FormControlLabel
+                          value="Laki-laki"
+                          control={<Radio />}
+                          label="Laki-laki"
+                        />
+                        <FormControlLabel
+                          value="Perempuan"
+                          control={<Radio />}
+                          label="Perempuan"
+                        />
+                      </RadioGroup>
+                    </FormControl>
+                  </Grid>
+                  <Grid item md={12} xs={12}>
+                    <Autocomplete
+                      id="tags-outlined"
+                      fullWidth
+                      options={listProdi}
+                      name="programStudi"
+                      getOptionLabel={(option) => option.nama || ''}
+                      filterSelectedOptions
+                      required
+                      value={values.programStudi}
+                      onChange={(e, value) => {
+                        handleChangeAutocomplete('programStudi', value);
+                        handleChangeAutocomplete('kelas', '');
+                        console.log('prodi', e);
+                      }}
+                      renderInput={(params) => (
+                        <TextField {...params} label="Program Studi" />
+                      )}
+                    />
+                  </Grid>
+                  <Grid item md={12} xs={12}>
+                    {/* <Autocomplete
+                      id="tags-outlined"
+                      options={
                         values.programStudi &&
                         Object.keys(values.programStudi).length
-                      )
-                    }
-                    required
-                    value={values.kelas}
-                    onChange={(e, value) => {
-                      handleChangeAutocomplete('kelas', value);
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Kelas"
-                        disabled={
-                          !(
-                            values.programStudi &&
-                            Object.keys(values.programStudi).length
-                          )
-                        }
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid item md={6} xs={12}>
-                  <TextField
-                    fullWidth
-                    label="Email "
-                    name="email"
-                    type="email"
-                    onChange={handleChange}
-                    required
-                    value={values.email}
-                    variant="outlined"
-                  />
-                </Grid>
-                <Grid item md={6} xs={12}>
-                  <TextField
-                    fullWidth
-                    required
-                    label="Nomor Telpon"
-                    name="noTelp"
-                    onChange={handleChange}
-                    type="number"
-                    value={values.noTelp}
-                    variant="outlined"
-                  />
-                </Grid>
-                <Grid item spacing={3} md={6} xs={12}>
-                  <Typography sx={{ py: 1.25 }}>Alamat</Typography>
-                  <Stack direction="row" spacing={2}>
-                    <Autocomplete
-                      getOptionLabel={(p) => p.nama || ''}
-                      disablePortal
-                      id="combo-box-demo"
-                      options={values.provinsi}
-                      value={selectedProvince}
-                      isOptionEqualToValue={(opt) =>
-                        selectedProvince.id === opt.id
+                          ? values.programStudi.kelas
+                          : []
                       }
-                      onChange={(event, value) => {
-                        if (value === null) {
-                          setProvince('');
-                          // loadKabupaten(null);
-                          // loadKecamatan(null);
-                          // loadKelurahan(null);
-                        } else {
-                          setProvince(value);
-                          loadKabupaten(value.id);
-                        }
-                        setKabupaten('');
-                        setKecamatan('');
-                      }}
-                      sx={{ width: 300, marginBottom: '1em' }}
-                      renderInput={(params) => (
-                        <TextField {...params} label="Provinsi" />
-                      )}
-                    />
-                    <Autocomplete
-                      getOptionLabel={(p) => p.nama || ''}
-                      disablePortal
-                      value={selectedKabupaten}
-                      isOptionEqualToValue={(opt) =>
-                        selectedKabupaten.id === opt.id
+                      name="programStudi"
+                      getOptionLabel={(option) => option.nama || ''}
+                      filterSelectedOptions
+                      disabled={
+                        !(
+                          values.programStudi &&
+                          Object.keys(values.programStudi).length
+                        )
                       }
-                      onChange={(event, value) => {
-                        if (value === null) {
-                          setKabupaten('');
-                          // loadKecamatan(null);
-                          // loadKelurahan(null);
-                        } else {
-                          setKabupaten(value);
-                          loadKecamatan(value.id);
-                        }
-                        setKecamatan('');
+                      required
+                      value={values.kelas}
+                      onChange={(e, value) => {
+                        handleChangeAutocomplete('kelas', value);
                       }}
-                      id="combo-box-demo"
-                      options={values.kabupaten}
-                      sx={{ width: 300, marginBottom: '1em' }}
                       renderInput={(params) => (
-                        <TextField {...params} label="Kabupaten" />
-                      )}
-                    />
-                    <Autocomplete
-                      getOptionLabel={(p) => p.nama || ''}
-                      disablePortal
-                      id="combo-box-demo"
-                      options={values.kecamatan}
-                      value={selectedKecamatan}
-                      isOptionEqualToValue={(opt) =>
-                        selectedKecamatan.id === opt.id
-                      }
-                      onChange={(event, value) => {
-                        if (value === null) {
-                          setKecamatan('');
-                        } else {
-                          setKecamatan(value);
-                        }
-                      }}
-                      sx={{ width: 300, marginBottom: '1em' }}
-                      renderInput={(params) => (
-                        <TextField {...params} label="Kecamatan" />
-                      )}
-                    />
-                  </Stack>
-                </Grid>
-              </Grid>
-              <Grid lg={8} md={9} xs={10}>
-                <CardContent>
-                  <Grid container spacing={3}>
-                    <Grid item md={6} xs={12}>
-                      <Typography sx={{ py: 1.25 }}>Foto Profil</Typography>
-                      <input
-                        onChange={(e) => handleSelectFile(e)}
-                        accept="image/*"
-                        id="contained-button-file"
-                        type="file"
-                      />
-                      {values.image ? (
-                        <img
-                          alt="foto profil"
-                          src={values.image}
-                          width="200"
-                          height="200"
-                          style={{ display: 'block', paddingTop: 12 }}
+                        <TextField
+                          {...params}
+                          label="Kelas"
+                          disabled={
+                            !(
+                              values.programStudi &&
+                              Object.keys(values.programStudi).length
+                            )
+                          }
                         />
-                      ) : null}
-                    </Grid>
+                      )}
+                    /> */}
                   </Grid>
-                </CardContent>
-              </Grid>
-            </CardContent>
+                </Grid>
+              </CardContent>
+            </Grid>
           </Grid>
         </Container>
         <Divider />

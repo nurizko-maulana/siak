@@ -1,7 +1,7 @@
 /* eslint-disable operator-linebreak */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-underscore-dangle */
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { useNavigate } from 'react-router-dom';
@@ -168,47 +168,66 @@ const AccountProfileDetails = (props) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {values?.mahasiswa?.slice(0, limit).map((data, index) => (
-                    <TableRow hover key={data._id}>
-                      <TableCell>
-                        <Box
-                          sx={{
-                            alignItems: 'center',
-                            display: 'flex'
-                          }}
-                        >
-                          <Typography color="textPrimary" variant="body1">
-                            {index + 1}
-                          </Typography>
-                        </Box>
-                      </TableCell>
-                      <TableCell>{data.nama}</TableCell>
+                  {values?.mahasiswa?.slice(0, limit).map((data, index) => {
+                    let nama = '';
+                    const space = ' ';
 
-                      <TableCell>
-                        <FormControl disabled={edit} component="fieldset">
-                          <RadioGroup
-                            row
-                            aria-label="gender"
-                            onChange={(e) => handleChangeKehadiran(e, index)}
-                            name="keterangan"
-                            value={values.mahasiswa[index].keterangan}
+                    if (edit) {
+                      nama =
+                        values.mahasiswa[index].id_mahasiswa?.firstName +
+                        space +
+                        values.mahasiswa[index].id_mahasiswa?.lastName;
+                    } else {
+                      nama =
+                        values.mahasiswa[index].firstName +
+                        space +
+                        values.mahasiswa[index].lastName;
+                    }
+                    console.log(
+                      'data nama',
+                      values.mahasiswa[index].id_mahasiswa?.firstName
+                    );
+                    return (
+                      <TableRow hover key={data._id}>
+                        <TableCell>
+                          <Box
+                            sx={{
+                              alignItems: 'center',
+                              display: 'flex'
+                            }}
                           >
-                            <FormControlLabel
-                              /* eslint-disable-next-line */
-                              value="hadir"
-                              control={<Radio />}
-                              label="Hadir"
-                            />
-                            <FormControlLabel
-                              value="absen"
-                              control={<Radio />}
-                              label="Absen"
-                            />
-                          </RadioGroup>
-                        </FormControl>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                            <Typography color="textPrimary" variant="body1">
+                              {index + 1}
+                            </Typography>
+                          </Box>
+                        </TableCell>
+                        <TableCell>{nama}</TableCell>
+                        <TableCell>
+                          <FormControl disabled={edit} component="fieldset">
+                            <RadioGroup
+                              row
+                              aria-label="gender"
+                              onChange={(e) => handleChangeKehadiran(e, index)}
+                              name="keterangan"
+                              value={values.mahasiswa[index].keterangan}
+                            >
+                              <FormControlLabel
+                                /* eslint-disable-next-line */
+                                value="hadir"
+                                control={<Radio />}
+                                label="Hadir"
+                              />
+                              <FormControlLabel
+                                value="absen"
+                                control={<Radio />}
+                                label="Absen"
+                              />
+                            </RadioGroup>
+                          </FormControl>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
                 </TableBody>
               </Table>
             </Box>

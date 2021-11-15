@@ -13,9 +13,9 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  Typography,
   Button,
-  Stack
+  Stack,
+  Avatar
 } from '@material-ui/core';
 import axios from 'axios';
 import { Edit, Trash2 } from 'react-feather';
@@ -73,7 +73,7 @@ const TabelMahasiswa = ({ customers }) => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>No</TableCell>
+                <TableCell>Profil</TableCell>
                 <TableCell>Nim</TableCell>
                 <TableCell>Nama</TableCell>
                 <TableCell>Prodi</TableCell>
@@ -81,36 +81,27 @@ const TabelMahasiswa = ({ customers }) => {
                 <TableCell>Email</TableCell>
                 <TableCell>Alamat</TableCell>
                 <TableCell>No Telp</TableCell>
-                <TableCell>Alamat Ortu</TableCell>
                 <TableCell>NIK</TableCell>
                 <TableCell>Gender</TableCell>
                 <TableCell>Aksi</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {mahasiswa.slice(0, limit).map((data, index) => (
+              {mahasiswa.slice(0, limit).map((data) => (
                 <TableRow hover key={data._id}>
                   <TableCell>
-                    <Box
-                      sx={{
-                        alignItems: 'center',
-                        display: 'flex'
-                      }}
-                    >
-                      {index + 1}
-                      <Typography color="textPrimary" variant="body1">
-                        {data.name}
-                      </Typography>
-                    </Box>
+                    <Avatar
+                      alt="Remy Sharp"
+                      src={`http://localhost:8081/gambar/${data.foto}`}
+                    />
                   </TableCell>
                   <TableCell>{data.nim}</TableCell>
-                  <TableCell>{data.nama}</TableCell>
+                  <TableCell>{`${data.firstName} ${data.lastName}`}</TableCell>
                   <TableCell>{data.id_programStudi?.nama}</TableCell>
                   <TableCell>{data.id_kelas?.nama}</TableCell>
                   <TableCell>{data.email}</TableCell>
-                  <TableCell>{data.alamat}</TableCell>
+                  <TableCell>{data.jalan}</TableCell>
                   <TableCell>{data.noTelp}</TableCell>
-                  <TableCell>{data.alamatOrtu}</TableCell>
                   <TableCell>{data.nik}</TableCell>
                   <TableCell>{data.jenisKelamin}</TableCell>
                   <TableCell>

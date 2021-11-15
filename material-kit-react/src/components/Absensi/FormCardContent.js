@@ -86,6 +86,7 @@ function FormCardContent({ prodi, handleChange, values }) {
                   handleChange(value, 'kelas');
                   handleChange(null, 'matkul');
                   handleChange(value.mahasiswa, 'mahasiswa');
+                  console.log(value.mahasiswa);
                   console.log('selected kelas', value);
                 }}
                 renderInput={(params) => (

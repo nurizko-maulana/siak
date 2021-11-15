@@ -15,7 +15,8 @@ import {
   TextField,
   Autocomplete
 } from '@material-ui/core';
-import { updateData } from '../../../store/action/masterAction';
+import { updateData, setAlertTrue } from '../../../store/action/masterAction';
+import AlertMessage from '../../AlertMessage';
 
 const AccountProfileDetails = (props) => {
   const [selectedProdi, setProdi] = useState('');
@@ -23,6 +24,10 @@ const AccountProfileDetails = (props) => {
   const { edit, prodi } = useSelector((state) => state.master);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const handleClickOpen = (data) => {
+    dispatch(setAlertTrue(data));
+  };
 
   const submit = (e) => {
     e.preventDefault();
@@ -35,6 +40,14 @@ const AccountProfileDetails = (props) => {
           console.log(res);
           dispatch(updateData());
           navigate('/app/master/prodi');
+        })
+        .catch((err) => {
+          console.log(err.response.status);
+
+          if (err.response.status === 412) {
+            handleClickOpen();
+            console.log('ok');
+          }
         });
     } else {
       console.log({
@@ -49,6 +62,14 @@ const AccountProfileDetails = (props) => {
         .then((res) => {
           console.log(res);
           navigate('/app/master/prodi');
+        })
+        .catch((err) => {
+          console.log(err.response.status);
+
+          if (err.response.status === 412) {
+            handleClickOpen();
+            console.log('ok');
+          }
         });
     }
   };
@@ -97,6 +118,7 @@ const AccountProfileDetails = (props) => {
           </Button>
         </Box>
       </Card>
+      <AlertMessage message="Progamstudi sudah terdaftar" />
     </form>
   );
 };
