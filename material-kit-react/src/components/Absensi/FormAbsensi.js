@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   Box,
   Button,
@@ -25,6 +25,7 @@ import {
   FormControl
 } from '@material-ui/core';
 import { useDeepCompareEffectNoCheck } from 'use-deep-compare-effect';
+import { updateData } from '../../store/action/masterAction';
 
 import FormCardContent from './FormCardContent';
 
@@ -32,6 +33,7 @@ const AccountProfileDetails = (props) => {
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const { absensi, edit } = useSelector((state) => state.master);
 
@@ -253,7 +255,10 @@ const AccountProfileDetails = (props) => {
           {edit ? (
             <Button
               color="primary"
-              onClick={() => navigate('/app/absensi')}
+              onClick={() => {
+                navigate('/app/absensi');
+                dispatch(updateData());
+              }}
               on
               variant="contained"
             >
