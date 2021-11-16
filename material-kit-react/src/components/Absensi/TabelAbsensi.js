@@ -89,7 +89,7 @@ const CustomerListResults = ({ customers }) => {
                     {moment(new Date(+data.tanggal)).format('DD/MM/YYYY')}
                   </TableCell>
                   <TableCell>
-                    {moment(data.createdAt).format('DD/MM/YYYY')}
+                    {/* {moment(data.createdAt).format('DD/MM/YYYY')} */}
                   </TableCell>
                   <TableCell>
                     <Button onClick={() => handleEdit(data)}>
