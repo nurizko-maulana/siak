@@ -79,6 +79,8 @@ const TabelMahasiswa = ({ customers }) => {
       || data.jenisKelamin.toLowerCase().includes(filter.mahasiswa)
     ) {
       return true;
+    } if (filter.mahasiswa === '') {
+      return true;
     }
     return false;
   };

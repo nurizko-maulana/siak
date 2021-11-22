@@ -24,10 +24,9 @@ const intialValue = {
     matkul: '',
     kelas: '',
     prodi: '',
-    mahasiswa: ''
   },
   filter: {
-    matkul: '', kelas: '', ruangan: '', prodi: ''
+    matkul: '', kelas: '', ruangan: '', prodi: '', mahasiswa: ''
   },
   alert: {
     data: {},
