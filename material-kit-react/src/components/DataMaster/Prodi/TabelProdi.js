@@ -29,7 +29,7 @@ function CustomerListResults() {
   const [prodi, setProdi] = useState([]);
 
   const dispatch = useDispatch();
-  const { alert } = useSelector((state) => state.master);
+  const { alert, filter } = useSelector((state) => state.master);
   const navigate = useNavigate();
 
   const getProdi = async () => {
@@ -88,7 +88,7 @@ function CustomerListResults() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {prodi.slice(0, limit).map((p, i) => (
+              {prodi.filter((data) => data.nama.toLowerCase().includes(filter.prodi)).slice(0, limit).map((p, i) => (
                 <TableRow hover key={p._id}>
                   <TableCell>{i + 1}</TableCell>
                   <TableCell>{p.nama}</TableCell>

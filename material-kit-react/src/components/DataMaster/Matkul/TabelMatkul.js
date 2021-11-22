@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -26,6 +26,7 @@ function CustomerListResults() {
   const [matkul, ssetMatkul] = useState([]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { filter } = useSelector((state) => state.master);
 
   const getMatkul = async () => {
     axios.get(`${process.env.REACT_APP_API}matakuliah`).then((res) => {
@@ -84,32 +85,35 @@ function CustomerListResults() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {matkul.slice(0, limit).map((data, i) => (
-                <TableRow hover key={data._id}>
-                  <TableCell>{i + 1}</TableCell>
-                  <TableCell>{data.kode}</TableCell>
-                  <TableCell>{data.nama}</TableCell>
-                  <TableCell>{data.sks}</TableCell>
-                  <TableCell>
-                    <Stack direction="row" spacing={2}>
-                      <Button
-                        variant="outlined"
-                        startIcon={<Trash2 />}
-                        onClick={() => handleClickOpen(data)}
-                      >
-                        Delete
-                      </Button>
-                      <Button
-                        variant="contained"
-                        onClick={() => handleEdit(data)}
-                        endIcon={<Edit />}
-                      >
-                        Edit
-                      </Button>
-                    </Stack>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {matkul
+                .filter((data) => data.nama?.toLowerCase().includes(filter.matkul) || data.kode?.toLowerCase().includes(filter.matkul) || data.sks?.toLowerCase().includes(filter.matkul))
+                .slice(0, limit)
+                .map((data, i) => (
+                  <TableRow hover key={data._id}>
+                    <TableCell>{i + 1}</TableCell>
+                    <TableCell>{data.kode}</TableCell>
+                    <TableCell>{data.nama}</TableCell>
+                    <TableCell>{data.sks}</TableCell>
+                    <TableCell>
+                      <Stack direction="row" spacing={2}>
+                        <Button
+                          variant="outlined"
+                          startIcon={<Trash2 />}
+                          onClick={() => handleClickOpen(data)}
+                        >
+                          Delete
+                        </Button>
+                        <Button
+                          variant="contained"
+                          onClick={() => handleEdit(data)}
+                          endIcon={<Edit />}
+                        >
+                          Edit
+                        </Button>
+                      </Stack>
+                    </TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </Box>

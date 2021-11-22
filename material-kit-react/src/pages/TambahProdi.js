@@ -5,7 +5,7 @@ import FormProdi from '../components/DataMaster/Prodi/FormProdi';
 const FormMahasiswa = () => (
   <>
     <Helmet>
-      <title>Customers | Material Kit</title>
+      <title>SIAK | Program Studi</title>
     </Helmet>
     <Box
       sx={{

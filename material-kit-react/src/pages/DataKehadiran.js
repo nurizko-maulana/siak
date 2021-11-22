@@ -7,7 +7,7 @@ import customers from '../__mocks__/customers';
 const DataKehadiran = () => (
   <>
     <Helmet>
-      <title>Customers | Material Kit</title>
+      <title>SIAK | Absensi</title>
     </Helmet>
     <Box
       sx={{

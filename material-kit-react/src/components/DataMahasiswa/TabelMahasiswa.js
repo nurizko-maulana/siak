@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -31,6 +31,7 @@ const TabelMahasiswa = ({ customers }) => {
   const [mahasiswa, setMahasiswa] = useState([]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { filter } = useSelector((state) => state.master);
 
   const handleLimitChange = (event) => {
     setLimit(event.target.value);
@@ -66,6 +67,22 @@ const TabelMahasiswa = ({ customers }) => {
     getMahasiswa();
   }, []);
 
+  const filterData = (data) => {
+    if (
+      data.firstName.toLowerCase().includes(filter.mahasiswa)
+      || data.lastName.toLowerCase().includes(filter.mahasiswa)
+      || data.id_programStudi?.nama.toLowerCase().includes(filter.mahasiswa)
+      || data.email.toLowerCase().includes(filter.mahasiswa)
+      || data.jalan.toLowerCase().includes(filter.mahasiswa)
+      || data.noTelp.toLowerCase().includes(filter.mahasiswa)
+      || data.nik.toLowerCase().includes(filter.mahasiswa)
+      || data.jenisKelamin.toLowerCase().includes(filter.mahasiswa)
+    ) {
+      return true;
+    }
+    return false;
+  };
+
   return (
     <Card>
       <PerfectScrollbar>
@@ -87,7 +104,7 @@ const TabelMahasiswa = ({ customers }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {mahasiswa.slice(0, limit).map((data) => (
+              {mahasiswa.filter((data) => filterData(data)).slice(page, limit).map((data) => (
                 <TableRow hover key={data._id}>
                   <TableCell>
                     <Avatar

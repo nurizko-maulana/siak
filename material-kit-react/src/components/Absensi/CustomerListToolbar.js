@@ -11,11 +11,14 @@ import {
 import axios from 'axios';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import { useDispatch } from 'react-redux';
 import { UserPlus } from 'react-feather';
 import { Link } from 'react-router-dom';
+import { setFilterAbsensi } from '../../store/action/masterAction';
 
 const CustomerListToolbar = (props) => {
   const [prodi, setProdi] = useState([]);
+  const dispatch = useDispatch();
   const [values, setValues] = useState({
     kelas: null,
     matkul: null,
@@ -54,6 +57,8 @@ const CustomerListToolbar = (props) => {
               onChange={(e, value) => {
                 handleChange(value, 'prodi');
                 handleChange(null, 'kelas');
+                handleChange(null, 'matkul');
+                dispatch(setFilterAbsensi({ prodi: value?.nama }));
               }}
               renderInput={(params) => <TextField {...params} label="Prodi" />}
             />
@@ -62,15 +67,19 @@ const CustomerListToolbar = (props) => {
               id="tags-outlined"
               options={
                 values.prodi && Object.keys(values.prodi).length
-                  ? values.prodi.id_kelas
+                  ? values.prodi.kelas
                   : []
               }
               getOptionLabel={(option) => option.nama || ''}
               filterSelectedOptions
               value={values.kelas}
               onChange={(e, value) => {
+                if (!value) {
+                  dispatch(setFilterAbsensi({ kelas: '' }));
+                }
                 handleChange(value, 'kelas');
                 handleChange(null, 'matkul');
+                dispatch(setFilterAbsensi({ kelas: value?.nama }));
               }}
               renderInput={(params) => (
                 <TextField {...params} label="Kelas" fullWidth />
@@ -81,7 +90,7 @@ const CustomerListToolbar = (props) => {
               sx={{ width: 300 }}
               options={
                 values.kelas && Object.keys(values.kelas).length
-                  ? values.kelas.id_matakuliah
+                  ? values.kelas.matakuliah
                   : []
               }
               getOptionLabel={(option) => option.nama || ''}
@@ -89,6 +98,7 @@ const CustomerListToolbar = (props) => {
               value={values.matkul}
               onChange={(e, value) => {
                 handleChange(value, 'matkul');
+                dispatch(setFilterAbsensi({ matkul: value?.nama }));
               }}
               renderInput={(params) => <TextField {...params} label="Matkul" />}
             />

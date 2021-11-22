@@ -2,7 +2,7 @@
 /* eslint-disable import/no-named-as-default */
 import { useState, useEffect } from 'react';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -26,6 +26,7 @@ import Alert from '../../Alert';
 function CustomerListResults() {
   const [ruangan, setRuangan] = useState([]);
   const dispatch = useDispatch();
+  const { filter } = useSelector((state) => state.master);
   const navigate = useNavigate();
 
   const getRuangan = async () => {
@@ -81,7 +82,7 @@ function CustomerListResults() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {ruangan.slice(0, limit).map((r, i) => (
+              {ruangan.filter((data) => data.nama.toLowerCase().includes(filter.ruangan)).slice(0, limit).map((r, i) => (
                 <TableRow hover key={r._id}>
                   <TableCell>{i + 1}</TableCell>
                   <TableCell>{r.nama}</TableCell>

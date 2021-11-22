@@ -5,7 +5,7 @@ import FormAbsensi from '../components/Absensi/FormAbsensi';
 const FormMahasiswa = () => (
   <>
     <Helmet>
-      <title>Customers | Material Kit</title>
+      <title>SIAK | Tambah Absensi</title>
     </Helmet>
     <Box
       sx={{

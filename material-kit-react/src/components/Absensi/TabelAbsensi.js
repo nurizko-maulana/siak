@@ -18,7 +18,7 @@ import {
 } from '@material-ui/core';
 import axios from 'axios';
 import { Edit } from 'react-feather';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { setEditAbsensi } from '../../store/action/masterAction';
 
@@ -27,6 +27,7 @@ const CustomerListResults = ({ customers }) => {
   const [page, setPage] = useState(0);
   const [absensi, setAbsensi] = useState([]);
   const dispatch = useDispatch();
+  const { filterAbsensi } = useSelector((state) => state.master);
   const navigate = useNavigate();
 
   const handleLimitChange = (event) => {
@@ -63,41 +64,45 @@ const CustomerListResults = ({ customers }) => {
                 <TableCell>No</TableCell>
                 <TableCell>Kelas</TableCell>
                 <TableCell>Kode Matkul</TableCell>
-                <TableCell>Tanggal</TableCell>
+
                 <TableCell>Ket</TableCell>
                 <TableCell>Detail</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {absensi?.slice(0, limit).map((data, index) => (
-                <TableRow hover key={data._id}>
-                  <TableCell>
-                    <Box
-                      sx={{
-                        alignItems: 'center',
-                        display: 'flex'
-                      }}
-                    >
-                      <Typography color="textPrimary" variant="body1">
-                        {index + 1}
-                      </Typography>
-                    </Box>
-                  </TableCell>
-                  <TableCell>{data.id_kelas.nama}</TableCell>
-                  <TableCell>{data?.id_matakuliah?.nama}</TableCell>
-                  <TableCell>
-                    {moment(new Date(+data.tanggal)).format('DD/MM/YYYY')}
-                  </TableCell>
-                  <TableCell>
-                    {/* {moment(data.createdAt).format('DD/MM/YYYY')} */}
-                  </TableCell>
-                  <TableCell>
-                    <Button onClick={() => handleEdit(data)}>
-                      <Edit />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {absensi
+                ?.filter((data) => data.id_kelas[0]?.nama.includes(filterAbsensi.kelas) || data.id_matakuliah[0]?.nama.includes(filterAbsensi.matkul))
+                .slice(0, limit)
+                .map((data, index) => (
+                  <TableRow hover key={data._id}>
+                    <TableCell>
+                      <Box
+                        sx={{
+                          alignItems: 'center',
+                          display: 'flex'
+                        }}
+                      >
+                        <Typography color="textPrimary" variant="body1">
+                          {index + 1}
+                        </Typography>
+                      </Box>
+                    </TableCell>
+                    <TableCell>{data.id_kelas[0].nama}</TableCell>
+                    <TableCell>{data?.id_matakuliah[0].nama}</TableCell>
+                    <TableCell>
+                      {moment(new Date(+data.tanggal)).format('DD/MM/YYYY')}
+                    </TableCell>
+                    <TableCell>
+                      {data.percent}
+                      %
+                    </TableCell>
+                    <TableCell>
+                      <Button onClick={() => handleEdit(data)}>
+                        <Edit />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </Box>

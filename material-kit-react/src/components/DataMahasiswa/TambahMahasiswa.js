@@ -24,6 +24,7 @@ import {
   Stack,
   Container
 } from '@material-ui/core';
+import { set } from 'lodash';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { updateData } from '../../store/action/masterAction';
@@ -165,13 +166,17 @@ const AccountProfileDetails = (props) => {
       })
       .catch((error) => console.log(error));
   };
-  const loadKelurahan = (id) => {
+  const loadKelas = (id) => {
     axios
-      .get(
-        `https://dev.farizdotid.com/api/daerahindonesia/kelurahan?id_kecamatan=${id}`
-      )
+      .get(`${process.env.REACT_APP_API}programStudi/${id}`)
       .then((res) => {
-        handleChangeAutocomplete('kelurahan', res.data.kelurahan);
+        setValues(({ programStudi, ...v }) => ({
+          ...v,
+          programStudi: {
+            ...programStudi,
+            id_kelas: res.data[0].kelas
+          }
+        }));
         console.log(res.data);
       })
       .catch((error) => console.log(error));
@@ -198,6 +203,7 @@ const AccountProfileDetails = (props) => {
         lastName: mahasiswa.lastName,
         image: `${process.env.REACT_APP_API_IMAGE + mahasiswa.foto}`
       }));
+      loadKelas(mahasiswa.id_programStudi._id);
     }
   }, []);
 
@@ -422,11 +428,11 @@ const AccountProfileDetails = (props) => {
                       getOptionLabel={(option) => option.nama || ''}
                       filterSelectedOptions
                       required
-                      value={values.programStudi}
+                      value={values?.programStudi}
                       onChange={(e, value) => {
                         handleChangeAutocomplete('programStudi', value);
                         handleChangeAutocomplete('kelas', '');
-                        console.log('prodi', e);
+                        console.log('prodi', value);
                       }}
                       renderInput={(params) => (
                         <TextField {...params} label="Program Studi" />
@@ -434,15 +440,22 @@ const AccountProfileDetails = (props) => {
                     />
                   </Grid>
                   <Grid item md={12} xs={12}>
-                    {/* <Autocomplete
+                    <Autocomplete
                       id="tags-outlined"
-                      options={
-                        values.programStudi &&
-                        Object.keys(values.programStudi).length
-                          ? values.programStudi.kelas
-                          : []
-                      }
-                      name="programStudi"
+                      options={(() => {
+                        if (
+                          values &&
+                          values.programStudi &&
+                          Object.keys(values.programStudi).length
+                        ) {
+                          if (edit) {
+                            return values.programStudi.id_kelas;
+                          }
+                          return values.programStudi.kelas;
+                        }
+                        return [];
+                      })()}
+                      name="kelas"
                       getOptionLabel={(option) => option.nama || ''}
                       filterSelectedOptions
                       required
@@ -453,7 +466,7 @@ const AccountProfileDetails = (props) => {
                       renderInput={(params) => (
                         <TextField {...params} label="Kelas" />
                       )}
-                    /> */}
+                    />
                   </Grid>
                 </Grid>
               </CardContent>

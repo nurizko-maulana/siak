@@ -1,13 +1,12 @@
 import { Helmet } from 'react-helmet-async';
 import { Box, Container } from '@material-ui/core';
-import CustomerListResults from '../components/Absensi/TabelAbsensi';
+import TabelAbsensi from '../components/Absensi/TabelAbsensi';
 import CustomerListToolbar from '../components/Absensi/CustomerListToolbar';
-import customers from '../__mocks__/customers';
 
 const Absensi = () => (
   <>
     <Helmet>
-      <title>Customers | Material Kit</title>
+      <title>SIAK | Absensi</title>
     </Helmet>
     <Box
       sx={{
@@ -19,7 +18,7 @@ const Absensi = () => (
       <Container maxWidth={false}>
         <CustomerListToolbar />
         <Box sx={{ pt: 3 }}>
-          <CustomerListResults customers={customers} />
+          <TabelAbsensi />
         </Box>
       </Container>
     </Box>

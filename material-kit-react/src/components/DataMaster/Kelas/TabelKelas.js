@@ -16,7 +16,7 @@ import {
 } from '@material-ui/core';
 import { Edit, Trash2 } from 'react-feather';
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { setEditKelas, setAlertTrue } from '../../../store/action/masterAction';
 
@@ -25,6 +25,7 @@ import Alert from '../../Alert';
 function CustomerListResults() {
   const [kelas, setKelas] = useState([]);
   const dispatch = useDispatch();
+  const { filter } = useSelector((state) => state.master);
   const navigate = useNavigate();
 
   const getKelas = async () => {
@@ -87,7 +88,7 @@ function CustomerListResults() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {kelas.slice(0, limit).map((k, i) => (
+              {kelas.filter((data) => data.nama.toLowerCase().includes(filter.kelas) || data.id_programStudi?.nama.toLowerCase().includes(filter.kelas)).slice(0, limit).map((k, i) => (
                 <TableRow hover key={k._id}>
                   <TableCell>{i + 1}</TableCell>
                   <TableCell>{k.nama}</TableCell>

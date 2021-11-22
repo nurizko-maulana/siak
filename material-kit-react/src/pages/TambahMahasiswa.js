@@ -5,7 +5,7 @@ import TambahMahasiswa from '../components/DataMahasiswa/TambahMahasiswa';
 const FormMahasiswa = () => (
   <>
     <Helmet>
-      <title>Customers | Material Kit</title>
+      <title>SIAK | Mahasiswa</title>
     </Helmet>
     <Box
       sx={{

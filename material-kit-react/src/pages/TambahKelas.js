@@ -5,7 +5,7 @@ import FormKelas from '../components/DataMaster/Kelas/FormKelas';
 const FormMahasiswa = () => (
   <>
     <Helmet>
-      <title>Customers | Material Kit</title>
+      <title>SIAK | Tambah Kelas</title>
     </Helmet>
     <Box
       sx={{

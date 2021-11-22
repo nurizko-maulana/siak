@@ -5,7 +5,7 @@ import FormMatkul from '../components/DataMaster/Matkul/FormMatkul';
 const FormMahasiswa = () => (
   <>
     <Helmet>
-      <title>Customers | Material Kit</title>
+      <title>SIAK | MATAKULIAH </title>
     </Helmet>
     <Box
       sx={{

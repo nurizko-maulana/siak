@@ -7,9 +7,23 @@ import {
   SET_EDIT_MAHASISWA,
   SET_ALERT_TRUE,
   SET_ALERT_FALSE,
-  SET_EDIT_ABSENSI
+  SET_EDIT_ABSENSI,
+  SET_FILTER_ABSENSI,
+  SET_FILTER
 } from '../types';
 
+export const setFilter = (data) => (dispatch) => {
+  dispatch({
+    type: SET_FILTER,
+    payload: data
+  });
+};
+export const setFilterAbsensi = (data) => (dispatch) => {
+  dispatch({
+    type: SET_FILTER_ABSENSI,
+    payload: data
+  });
+};
 export const setEditAbsensi = (data) => (dispatch) => {
   dispatch({
     type: SET_EDIT_ABSENSI,

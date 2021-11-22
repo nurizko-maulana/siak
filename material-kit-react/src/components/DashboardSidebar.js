@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable object-curly-newline */
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -31,11 +32,11 @@ const items = [
     icon: CheckSquare,
     title: 'Absensi'
   },
-  {
-    href: '/app/dataKehadiran',
-    icon: UsersIcon,
-    title: 'Data Kehadiran'
-  },
+  // {
+  //   href: '/app/dataKehadiran',
+  //   icon: UsersIcon,
+  //   title: 'Data Kehadiran'
+  // },
   {
     href: '/app/master',
     icon: Server,

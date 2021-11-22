@@ -120,13 +120,13 @@ const AccountProfileDetails = (props) => {
   useEffect(() => {
     getProdi();
     if (edit) {
-      handleChange(absensi.jam.masuk, 'start');
-      handleChange(absensi.jam.keluar, 'end');
-      handleChange(absensi.id_kelas.id_programStudi, 'prodi');
-      handleChange(absensi.id_kelas, 'kelas');
-      handleChange(absensi.id_matakuliah, 'matkul');
-      handleChange(absensi.id_matakuliah.kode, 'kode');
-      handleChange(absensi.id_matakuliah.sks, 'sks');
+      handleChange(absensi.masuk, 'start');
+      handleChange(absensi.keluar, 'end');
+      handleChange(absensi.id_kelas[0].id_programStudi, 'prodi');
+      handleChange(absensi.id_kelas[0], 'kelas');
+      handleChange(absensi.id_matakuliah[0], 'matkul');
+      handleChange(absensi.id_matakuliah[0].kode, 'kode');
+      handleChange(absensi.id_matakuliah[0].sks, 'sks');
       handleChange(absensi.tanggal, 'tanggal');
       handleChange(absensi.absensi, 'mahasiswa');
     } else {
@@ -176,19 +176,15 @@ const AccountProfileDetails = (props) => {
 
                     if (edit) {
                       nama =
-                        values.mahasiswa[index].id_mahasiswa?.firstName +
+                        values.mahasiswa[index].firstName +
                         space +
-                        values.mahasiswa[index].id_mahasiswa?.lastName;
+                        values.mahasiswa[index].lastName;
                     } else {
                       nama =
                         values.mahasiswa[index].firstName +
                         space +
                         values.mahasiswa[index].lastName;
                     }
-                    console.log(
-                      'data nama',
-                      values.mahasiswa[index].id_mahasiswa?.firstName
-                    );
                     return (
                       <TableRow hover key={data._id}>
                         <TableCell>
