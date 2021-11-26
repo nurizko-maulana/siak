@@ -87,7 +87,7 @@ function CustomerListResults() {
             <TableBody>
               {matkul
                 .filter((data) => data.nama?.toLowerCase().includes(filter.matkul) || data.kode?.toLowerCase().includes(filter.matkul) || data.sks?.toLowerCase().includes(filter.matkul))
-                .slice(0, limit)
+                .slice(page * limit, (limit * page) + limit)
                 .map((data, i) => (
                   <TableRow hover key={data._id}>
                     <TableCell>{i + 1}</TableCell>

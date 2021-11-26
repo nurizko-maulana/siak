@@ -61,8 +61,8 @@ const AccountProfileDetails = (props) => {
     axios
       .get(`${process.env.REACT_APP_API}absensi/laporan`, {
         params: {
-          matakuliah: values.matkul._id,
-          kelas: values.kelas._id
+          matakuliah: values.matkul?._id,
+          kelas: values.kelas?._id
         }
       })
       .then((res) => {
@@ -122,7 +122,7 @@ const AccountProfileDetails = (props) => {
     if (edit) {
       handleChange(absensi.masuk, 'start');
       handleChange(absensi.keluar, 'end');
-      handleChange(absensi.id_kelas[0].id_programStudi, 'prodi');
+      handleChange(absensi.id_kelas[0]?.id_programStudi, 'prodi');
       handleChange(absensi.id_kelas[0], 'kelas');
       handleChange(absensi.id_matakuliah[0], 'matkul');
       handleChange(absensi.id_matakuliah[0].kode, 'kode');
@@ -136,7 +136,7 @@ const AccountProfileDetails = (props) => {
 
   useDeepCompareEffectNoCheck(() => {
     if (values.matkul) {
-      getMahasiswa();
+      // getMahasiswa();
       handleChange(values.matkul && values.matkul.kode, 'kode');
       handleChange(values.matkul && values.matkul.sks, 'sks');
     }
@@ -252,7 +252,7 @@ const AccountProfileDetails = (props) => {
             <Button
               color="primary"
               onClick={() => {
-                navigate('/app/absensi');
+                navigate(-1);
                 dispatch(updateData());
               }}
               on

@@ -10,7 +10,8 @@ import {
   Divider,
   Grid,
   TextField,
-  Autocomplete
+  Autocomplete,
+  Stack
 } from '@material-ui/core';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
@@ -61,7 +62,6 @@ const AccountProfileDetails = (props) => {
         })
         .catch((err) => {
           console.log(err.response.status);
-
           if (err.response.status === 412) {
             handleClickOpen();
             console.log('ok');
@@ -168,9 +168,22 @@ const AccountProfileDetails = (props) => {
             p: 2
           }}
         >
-          <Button color="primary" variant="contained" type="submit">
-            Save
-          </Button>
+          <Stack direction="row" spacing={2}>
+            {edit ? (
+              <Button
+                color="primary"
+                onClick={() => { dispatch(updateData()); navigate(-1); }}
+                variant="contained"
+              >
+                Back
+              </Button>
+            ) : (
+              ''
+            )}
+            <Button color="primary" variant="contained" type="submit">
+              Save
+            </Button>
+          </Stack>
         </Box>
       </Card>
       <AlertMessage message="Kelas sudah terdaftar" />

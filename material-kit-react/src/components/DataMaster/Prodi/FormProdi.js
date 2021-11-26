@@ -13,7 +13,8 @@ import {
   Divider,
   Grid,
   TextField,
-  Autocomplete
+  Autocomplete,
+  Stack
 } from '@material-ui/core';
 import { updateData, setAlertTrue } from '../../../store/action/masterAction';
 import AlertMessage from '../../AlertMessage';
@@ -113,9 +114,22 @@ const AccountProfileDetails = (props) => {
             p: 2
           }}
         >
-          <Button color="primary" type="submit" variant="contained">
-            Save
-          </Button>
+          <Stack direction="row" spacing={2}>
+            {edit ? (
+              <Button
+                color="primary"
+                onClick={() => { dispatch(updateData()); navigate(-1); }}
+                variant="contained"
+              >
+                Back
+              </Button>
+            ) : (
+              ''
+            )}
+            <Button color="primary" variant="contained" type="submit">
+              Save
+            </Button>
+          </Stack>
         </Box>
       </Card>
       <AlertMessage message="Progamstudi sudah terdaftar" />

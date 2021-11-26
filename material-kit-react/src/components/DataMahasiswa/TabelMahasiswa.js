@@ -1,6 +1,5 @@
 /* eslint-disable no-underscore-dangle */
 import { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -25,7 +24,7 @@ import {
 } from '../../store/action/masterAction';
 import Alert from '../Alert';
 
-const TabelMahasiswa = ({ customers }) => {
+const TabelMahasiswa = () => {
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
   const [mahasiswa, setMahasiswa] = useState([]);
@@ -106,7 +105,7 @@ const TabelMahasiswa = ({ customers }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {mahasiswa.filter((data) => filterData(data)).slice(page, limit).map((data) => (
+              {mahasiswa.filter((data) => filterData(data)).slice(page * limit, (limit * page) + limit).map((data) => (
                 <TableRow hover key={data._id}>
                   <TableCell>
                     <Avatar
@@ -149,7 +148,7 @@ const TabelMahasiswa = ({ customers }) => {
       </PerfectScrollbar>
       <TablePagination
         component="div"
-        count={customers.length}
+        count={mahasiswa.length}
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleLimitChange}
         page={page}
@@ -162,10 +161,6 @@ const TabelMahasiswa = ({ customers }) => {
       />
     </Card>
   );
-};
-
-TabelMahasiswa.propTypes = {
-  customers: PropTypes.array.isRequired
 };
 
 export default TabelMahasiswa;

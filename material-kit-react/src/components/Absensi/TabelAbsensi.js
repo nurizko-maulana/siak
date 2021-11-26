@@ -39,7 +39,7 @@ const CustomerListResults = ({ customers }) => {
   };
 
   const getAbsensi = () => {
-    axios.get(`${process.env.REACT_APP_API}absensi`).then((res) => {
+    axios.get(`${process.env.REACT_APP_API}absensi?matakuliah}`).then((res) => {
       console.log(res);
       setAbsensi(res.data);
     });
@@ -64,15 +64,17 @@ const CustomerListResults = ({ customers }) => {
                 <TableCell>No</TableCell>
                 <TableCell>Kelas</TableCell>
                 <TableCell>Kode Matkul</TableCell>
-
-                <TableCell>Ket</TableCell>
+                <TableCell>Tanggal</TableCell>
+                <TableCell>Kehaidran</TableCell>
                 <TableCell>Detail</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {absensi
-                ?.filter((data) => data.id_kelas[0]?.nama.includes(filterAbsensi.kelas) || data.id_matakuliah[0]?.nama.includes(filterAbsensi.matkul))
-                .slice(0, limit)
+                ?.filter(
+                  (data) => data.id_kelas[0]?.nama.includes(filterAbsensi.kelas) || data.id_matakuliah[0]?.nama.includes(filterAbsensi.matkul)
+                )
+                .slice(page * limit, (page * limit) + limit)
                 .map((data, index) => (
                   <TableRow hover key={data._id}>
                     <TableCell>
@@ -87,8 +89,8 @@ const CustomerListResults = ({ customers }) => {
                         </Typography>
                       </Box>
                     </TableCell>
-                    <TableCell>{data.id_kelas[0].nama}</TableCell>
-                    <TableCell>{data?.id_matakuliah[0].nama}</TableCell>
+                    <TableCell>{data.id_kelas[0]?.nama}</TableCell>
+                    <TableCell>{data?.id_matakuliah[0]?.nama}</TableCell>
                     <TableCell>
                       {moment(new Date(+data.tanggal)).format('DD/MM/YYYY')}
                     </TableCell>

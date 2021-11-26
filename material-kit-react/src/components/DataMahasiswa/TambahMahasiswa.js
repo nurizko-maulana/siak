@@ -24,7 +24,7 @@ import {
   Stack,
   Container
 } from '@material-ui/core';
-import { set } from 'lodash';
+
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { updateData } from '../../store/action/masterAction';
@@ -102,8 +102,8 @@ const AccountProfileDetails = (props) => {
         })
         .then((res) => {
           console.log('respon mahasiswa', res);
-          dispatch(updateData());
           navigate('/app/mahasiswa');
+          dispatch(updateData());
         });
     } else {
       const form = new FormData(e.target);
@@ -121,7 +121,7 @@ const AccountProfileDetails = (props) => {
         })
         .then((res) => {
           console.log('respon mahasiswa', res);
-          navigate('/app/mahasiswa');
+          // navigate('/app/mahasiswa');
         });
     }
   };
@@ -182,6 +182,12 @@ const AccountProfileDetails = (props) => {
       .catch((error) => console.log(error));
   };
 
+  const handleBack = () => {
+    console.log('ok');
+    dispatch(updateData());
+    navigate('/app/mahasiswa');
+  };
+
   useEffect(() => {
     getProdi();
     loadProvinsi();
@@ -203,7 +209,7 @@ const AccountProfileDetails = (props) => {
         lastName: mahasiswa.lastName,
         image: `${process.env.REACT_APP_API_IMAGE + mahasiswa.foto}`
       }));
-      loadKelas(mahasiswa.id_programStudi._id);
+      loadKelas(mahasiswa.id_programStudi?._id);
     }
   }, []);
 
@@ -481,9 +487,23 @@ const AccountProfileDetails = (props) => {
             p: 2
           }}
         >
-          <Button color="primary" type="submit" variant="contained">
-            Save
-          </Button>
+          <Stack spacing={2} direction="row">
+            {edit ? (
+              <Button
+                color="primary"
+                onClick={() => handleBack()
+                }
+                variant="contained"
+              >
+                Back
+              </Button>
+            ) : (
+              ''
+            )}
+            <Button color="primary" type="submit" variant="contained">
+              Save
+            </Button>
+          </Stack>
         </Box>
       </Card>
     </form>

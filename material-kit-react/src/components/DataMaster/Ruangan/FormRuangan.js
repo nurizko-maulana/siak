@@ -7,7 +7,8 @@ import {
   CardHeader,
   Divider,
   Grid,
-  TextField
+  TextField,
+  Stack
 } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -72,12 +73,15 @@ const AccountProfileDetails = (props) => {
         });
     }
   }
+  const handleChange = (e) => {
+    setRuang(e.target.value);
+  };
 
   useEffect(() => {
     if (edit) {
       setRuang(ruangan.nama);
     }
-  });
+  }, []);
 
   return (
     <form autoComplete="off" {...props} onSubmit={(e) => submit(e)}>
@@ -96,7 +100,7 @@ const AccountProfileDetails = (props) => {
                 label="Ruangan"
                 name="ruang"
                 type="number"
-                onChange={(e) => setRuang(e.target.value)}
+                onChange={handleChange}
                 required
                 value={ruang}
                 variant="outlined"
@@ -113,9 +117,22 @@ const AccountProfileDetails = (props) => {
             p: 2
           }}
         >
-          <Button color="primary" variant="contained" type="submit">
-            Save
-          </Button>
+          <Stack direction="row" spacing={2}>
+            {edit ? (
+              <Button
+                color="primary"
+                onClick={() => { dispatch(updateData()); navigate(-1); }}
+                variant="contained"
+              >
+                Back
+              </Button>
+            ) : (
+              ''
+            )}
+            <Button color="primary" variant="contained" type="submit">
+              Save
+            </Button>
+          </Stack>
         </Box>
       </Card>
       <AlertMessage message="Ruangan sudah terdaftar" />

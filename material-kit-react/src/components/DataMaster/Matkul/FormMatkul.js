@@ -7,7 +7,8 @@ import {
   CardHeader,
   Divider,
   Grid,
-  TextField
+  TextField,
+  Stack
 } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -43,7 +44,7 @@ const AccountProfileDetails = (props) => {
         .put(`${process.env.REACT_APP_API}matakuliah/${_id} `, {
           kode: selectedKodeMatkul,
           sks: selectedSKS,
-          id_matakuliah: selectedMatkul
+          nama: selectedMatkul
         })
         .then((res) => {
           console.log(res);
@@ -144,9 +145,22 @@ const AccountProfileDetails = (props) => {
             p: 2
           }}
         >
-          <Button type="submit" color="primary" variant="contained">
-            Save
-          </Button>
+          <Stack direction="row" spacing={2}>
+            {edit ? (
+              <Button
+                color="primary"
+                onClick={() => { dispatch(updateData()); navigate(-1); }}
+                variant="contained"
+              >
+                Back
+              </Button>
+            ) : (
+              ''
+            )}
+            <Button color="primary" variant="contained" type="submit">
+              Save
+            </Button>
+          </Stack>
         </Box>
       </Card>
       <AlertMessage message="Kode kelas sudah terdaftar" />

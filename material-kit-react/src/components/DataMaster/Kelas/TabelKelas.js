@@ -88,7 +88,7 @@ function CustomerListResults() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {kelas.filter((data) => data.nama.toLowerCase().includes(filter.kelas) || data.id_programStudi?.nama.toLowerCase().includes(filter.kelas)).slice(0, limit).map((k, i) => (
+              {kelas.filter((data) => data.nama.toLowerCase().includes(filter.kelas) || data.id_programStudi?.nama.toLowerCase().includes(filter.kelas)).slice(page * limit, (limit * page) + limit).map((k, i) => (
                 <TableRow hover key={k._id}>
                   <TableCell>{i + 1}</TableCell>
                   <TableCell>{k.nama}</TableCell>

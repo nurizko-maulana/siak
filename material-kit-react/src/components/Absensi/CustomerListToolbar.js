@@ -9,16 +9,17 @@ import {
   Stack
 } from '@material-ui/core';
 import axios from 'axios';
-import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
+// import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
+// import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { useDispatch } from 'react-redux';
 import { UserPlus } from 'react-feather';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { setFilterAbsensi } from '../../store/action/masterAction';
 
 const CustomerListToolbar = (props) => {
   const [prodi, setProdi] = useState([]);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [values, setValues] = useState({
     kelas: null,
     matkul: null,
@@ -103,7 +104,7 @@ const CustomerListToolbar = (props) => {
               renderInput={(params) => <TextField {...params} label="Matkul" />}
             />
           </Stack>
-          <Stack direction="row" spacing={2}>
+          {/* <Stack direction="row" spacing={2}>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DesktopDatePicker
                 label="Dari Tanggal"
@@ -122,16 +123,20 @@ const CustomerListToolbar = (props) => {
                 renderInput={(params) => <TextField {...params} />}
               />
             </LocalizationProvider>
-          </Stack>
-          <Stack>
-            <Link to="/app/absensi/add">
-              <Button color="primary" variant="contained">
-                <SvgIcon fontSize="small" color="action">
-                  <UserPlus color="white" />
-                </SvgIcon>
-                &nbsp; Tambah Data
-              </Button>
-            </Link>
+          </Stack> */}
+          <Stack direction="row" spacing={2}>
+            <Button onClick={() => { navigate('/app/absensi/add'); }} color="primary" variant="contained">
+              <SvgIcon fontSize="small" color="action">
+                <UserPlus color="white" />
+              </SvgIcon>
+              &nbsp; Tambah Data
+            </Button>
+            <Button onClick={() => { console.log('print'); navigate('/print'); }} color="primary" variant="contained">
+              <SvgIcon fontSize="small" color="action">
+                <UserPlus color="white" />
+              </SvgIcon>
+              &nbsp; Print
+            </Button>
           </Stack>
         </Stack>
       </Paper>

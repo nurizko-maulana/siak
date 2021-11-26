@@ -3,6 +3,7 @@ import DashboardLayout from './components/DashboardLayout';
 import MainLayout from './components/MainLayout';
 import Master from './pages/Master';
 import Absensi from './pages/Absensi';
+import Print from './pages/Print';
 import DataMahasiswa from './pages/DataMahasiswa';
 import DataKehadiran from './pages/DataKehadiran';
 import TambahMahasiswa from './pages/TambahMahasiswa';
@@ -98,7 +99,11 @@ const routes = [
       { path: '/', element: <Navigate to="/app/master" /> },
       { path: '*', element: <NotFound /> }
     ]
-  }
+  },
+  {
+    path: '/print',
+    element: <Print />
+  },
 ];
 
 export default routes;
