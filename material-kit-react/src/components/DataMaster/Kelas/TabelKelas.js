@@ -72,6 +72,8 @@ function CustomerListResults() {
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
+
+  const content = kelas.filter((data) => data.nama.toLowerCase().includes(filter.kelas) || data.id_programStudi?.nama.toLowerCase().includes(filter.kelas));
   /* eslint no-underscore-dangle: 0 */
   return (
     <Card>
@@ -88,7 +90,7 @@ function CustomerListResults() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {kelas.filter((data) => data.nama.toLowerCase().includes(filter.kelas) || data.id_programStudi?.nama.toLowerCase().includes(filter.kelas)).slice(page * limit, (limit * page) + limit).map((k, i) => (
+              {content.slice(page * limit, (limit * page) + limit).map((k, i) => (
                 <TableRow hover key={k._id}>
                   <TableCell>{i + 1}</TableCell>
                   <TableCell>{k.nama}</TableCell>
@@ -127,7 +129,7 @@ function CustomerListResults() {
       </PerfectScrollbar>
       <TablePagination
         component="div"
-        count={kelas.length}
+        count={content.length}
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleLimitChange}
         page={page}

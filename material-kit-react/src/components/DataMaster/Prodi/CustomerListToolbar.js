@@ -52,7 +52,7 @@ const CustomerListToolbar = () => {
                     </InputAdornment>
                   )
                 }}
-                placeholder="Search Kelas"
+                placeholder="Search Program Studi"
                 variant="outlined"
               />
             </Box>

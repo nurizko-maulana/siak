@@ -69,6 +69,13 @@ function CustomerListResults() {
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
+
+  const content = matkul
+    .filter(
+      (data) => data.nama?.toLowerCase().includes(filter.matkul)
+        || data.kode?.toLowerCase().includes(filter.matkul)
+        || data.sks?.toLowerCase().includes(filter.matkul)
+    );
   /* eslint no-underscore-dangle: 0 */
   return (
     <Card>
@@ -85,10 +92,8 @@ function CustomerListResults() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {matkul
-                .filter((data) => data.nama?.toLowerCase().includes(filter.matkul) || data.kode?.toLowerCase().includes(filter.matkul) || data.sks?.toLowerCase().includes(filter.matkul))
-                .slice(page * limit, (limit * page) + limit)
-                .map((data, i) => (
+              {content
+                .slice(page * limit, limit * page + limit).map((data, i) => (
                   <TableRow hover key={data._id}>
                     <TableCell>{i + 1}</TableCell>
                     <TableCell>{data.kode}</TableCell>
@@ -120,7 +125,7 @@ function CustomerListResults() {
       </PerfectScrollbar>
       <TablePagination
         component="div"
-        count={matkul.length}
+        count={content.length}
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleLimitChange}
         page={page}

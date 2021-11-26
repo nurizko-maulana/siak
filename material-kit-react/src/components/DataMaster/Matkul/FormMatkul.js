@@ -102,7 +102,7 @@ const AccountProfileDetails = (props) => {
             <Grid item md={12} xs={12}>
               <TextField
                 fullWidth
-                type="number"
+                type="text"
                 label="Kode Matakuliah"
                 name="Kode"
                 onChange={(e) => setKodeMatkul(e.target.value)}

@@ -54,6 +54,10 @@ const CustomerListResults = ({ customers }) => {
     getAbsensi();
   }, []);
 
+  const content = absensi.filter(
+    (data) => data.id_kelas[0]?.nama.includes(filterAbsensi.kelas) || data.id_matakuliah[0]?.nama.includes(filterAbsensi.matkul)
+  );
+
   return (
     <Card>
       <PerfectScrollbar>
@@ -70,10 +74,7 @@ const CustomerListResults = ({ customers }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {absensi
-                ?.filter(
-                  (data) => data.id_kelas[0]?.nama.includes(filterAbsensi.kelas) || data.id_matakuliah[0]?.nama.includes(filterAbsensi.matkul)
-                )
+              {content
                 .slice(page * limit, (page * limit) + limit)
                 .map((data, index) => (
                   <TableRow hover key={data._id}>
@@ -111,7 +112,7 @@ const CustomerListResults = ({ customers }) => {
       </PerfectScrollbar>
       <TablePagination
         component="div"
-        count={absensi?.length}
+        count={content?.length}
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleLimitChange}
         page={page}

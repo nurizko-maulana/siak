@@ -69,11 +69,13 @@ function CustomerListResults() {
     setLimit(event.target.value);
   };
 
-  useEffect(() => {}, [alert]);
+  useEffect(() => { }, [alert]);
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
+
+  const content = prodi.filter((data) => data.nama.toLowerCase().includes(filter.prodi));
   /* eslint no-underscore-dangle: 0 */
   return (
     <Card>
@@ -88,7 +90,7 @@ function CustomerListResults() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {prodi.filter((data) => data.nama.toLowerCase().includes(filter.prodi)).slice(0, limit).map((p, i) => (
+              {content.slice(0, limit).map((p, i) => (
                 <TableRow hover key={p._id}>
                   <TableCell>{i + 1}</TableCell>
                   <TableCell>{p.nama}</TableCell>
@@ -118,7 +120,7 @@ function CustomerListResults() {
       </PerfectScrollbar>
       <TablePagination
         component="div"
-        count={prodi.length}
+        count={content.length}
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleLimitChange}
         page={page}

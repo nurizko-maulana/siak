@@ -68,6 +68,7 @@ function CustomerListResults() {
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
+  const content = ruangan.filter((data) => data.nama.toLowerCase().includes(filter.ruangan)).slice(0, limit);
   /* eslint no-underscore-dangle: 0 */
   return (
     <Card>
@@ -82,7 +83,7 @@ function CustomerListResults() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {ruangan.filter((data) => data.nama.toLowerCase().includes(filter.ruangan)).slice(0, limit).map((r, i) => (
+              {content.map((r, i) => (
                 <TableRow hover key={r._id}>
                   <TableCell>{i + 1}</TableCell>
                   <TableCell>{r.nama}</TableCell>
@@ -112,7 +113,7 @@ function CustomerListResults() {
       </PerfectScrollbar>
       <TablePagination
         component="div"
-        count={ruangan.length}
+        count={content.length}
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleLimitChange}
         page={page}

@@ -51,7 +51,7 @@ const CustomerListToolbar = (props) => {
                     </InputAdornment>
                   )
                 }}
-                placeholder="Search Kelas"
+                placeholder="Search Ruangan"
                 variant="outlined"
               />
             </Box>
