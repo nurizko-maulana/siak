@@ -66,8 +66,8 @@ const Print = () => {
                     <td rowSpan={data.absensi.length}>{data.id_kelas[0].nama}</td>
                     <td rowSpan={data.absensi.length}>{data.id_matakuliah[0].nama}</td>
                     <td rowSpan={data.absensi.length}>{moment(new Date(+data.tanggal)).format('DD/MM/YYYY')}</td>
-                    <td rowSpan={data.absensi.length}>{moment(data.masuk).format('LT')}</td>
-                    <td rowSpan={data.absensi.length}>{moment(data.keluar).format('LT')}</td>
+                    <td rowSpan={data.absensi.length}>{data.masuk ? moment(data.masuk).format('LT') : ''}</td>
+                    <td rowSpan={data.absensi.length}>{data.keluar ? moment(data.keluar ?? '2021-11-15T02:00:00.853Z').format('LT') : ''}</td>
                   </>
                 )
               }
