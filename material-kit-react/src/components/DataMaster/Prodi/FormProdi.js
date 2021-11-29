@@ -35,7 +35,7 @@ const AccountProfileDetails = (props) => {
     if (edit) {
       axios
         .put(`${process.env.REACT_APP_API}programStudi/${prodi._id}`, {
-          nama: selectedProdi
+          nama: selectedProdi.trim()
         })
         .then((res) => {
           console.log(res);
@@ -58,7 +58,7 @@ const AccountProfileDetails = (props) => {
       axios
         .post(`${process.env.REACT_APP_API}programStudi`, {
           id: new Date().getTime,
-          nama: selectedProdi
+          nama: selectedProdi.trim()
         })
         .then((res) => {
           console.log(res);

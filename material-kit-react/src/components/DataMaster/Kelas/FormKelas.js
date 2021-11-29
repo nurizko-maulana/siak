@@ -52,7 +52,7 @@ const AccountProfileDetails = (props) => {
     if (edit) {
       axios
         .put(`${process.env.REACT_APP_API}kelas/${kelas._id}`, {
-          nama: selectedKelas,
+          nama: selectedKelas.trim(),
           id_matakuliah: selectedMatkul.map((matkul) => matkul._id)
         })
         .then((res) => {
@@ -70,14 +70,14 @@ const AccountProfileDetails = (props) => {
     } else {
       console.log({
         id: new Date().getTime(),
-        kelas: selectedKelas,
+        kelas: selectedKelas.trim(),
         matakuliah: selectedMatkul.map((matkul) => matkul._id),
         id_programStudi: selectedProdi._id
       });
       axios
         .post(`${process.env.REACT_APP_API}kelas`, {
           id: new Date().getTime(),
-          nama: selectedKelas,
+          nama: selectedKelas.trim(),
           id_matakuliah: selectedMatkul.map((matkul) => matkul._id),
           id_programStudi: selectedProdi._id
         })

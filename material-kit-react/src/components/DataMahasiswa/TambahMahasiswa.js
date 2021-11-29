@@ -121,7 +121,7 @@ const AccountProfileDetails = (props) => {
         })
         .then((res) => {
           console.log('respon mahasiswa', res);
-          // navigate('/app/mahasiswa');
+          navigate('/app/mahasiswa');
         });
     }
   };

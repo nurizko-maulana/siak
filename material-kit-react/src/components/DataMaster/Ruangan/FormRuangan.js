@@ -38,7 +38,7 @@ const AccountProfileDetails = (props) => {
       const { _id } = ruangan;
       axios
         .put(`${process.env.REACT_APP_API}ruangan/${_id}`, {
-          nama: ruang
+          nama: ruang.trim()
         })
         .then((res) => {
           console.log(res);
@@ -56,7 +56,7 @@ const AccountProfileDetails = (props) => {
     } else {
       axios
         .post(`${process.env.REACT_APP_API}ruangan`, {
-          nama: ruang
+          nama: ruang.trim()
         })
         .then((res) => {
           console.log(res);

@@ -42,9 +42,9 @@ const AccountProfileDetails = (props) => {
       const { _id } = matkul;
       axios
         .put(`${process.env.REACT_APP_API}matakuliah/${_id} `, {
-          kode: selectedKodeMatkul,
-          sks: selectedSKS,
-          nama: selectedMatkul
+          kode: selectedKodeMatkul.trim(),
+          sks: selectedSKS.trim(),
+          nama: selectedMatkul.trim()
         })
         .then((res) => {
           console.log(res);
@@ -63,9 +63,9 @@ const AccountProfileDetails = (props) => {
       axios
         .post(`${process.env.REACT_APP_API}matakuliah`, {
           id: new Date().getTime(),
-          kode: selectedKodeMatkul,
-          nama: selectedMatkul,
-          sks: selectedSKS
+          kode: selectedKodeMatkul.trim(),
+          nama: selectedMatkul.trim(),
+          sks: selectedSKS.trim()
         })
         .then((res) => {
           // console.log(res);
