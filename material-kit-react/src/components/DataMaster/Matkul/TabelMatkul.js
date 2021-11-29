@@ -95,7 +95,7 @@ function CustomerListResults() {
               {content
                 .slice(page * limit, limit * page + limit).map((data, i) => (
                   <TableRow hover key={data._id}>
-                    <TableCell>{i + 1}</TableCell>
+                    <TableCell>{(page * limit) + (i + 1)}</TableCell>
                     <TableCell>{data.kode}</TableCell>
                     <TableCell>{data.nama}</TableCell>
                     <TableCell>{data.sks}</TableCell>

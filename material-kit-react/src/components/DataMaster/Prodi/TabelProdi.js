@@ -92,7 +92,7 @@ function CustomerListResults() {
             <TableBody>
               {content.slice(0, limit).map((p, i) => (
                 <TableRow hover key={p._id}>
-                  <TableCell>{i + 1}</TableCell>
+                  <TableCell>{(page * limit) + (i + 1)}</TableCell>
                   <TableCell>{p.nama}</TableCell>
                   <TableCell>
                     <Stack direction="row" spacing={2}>

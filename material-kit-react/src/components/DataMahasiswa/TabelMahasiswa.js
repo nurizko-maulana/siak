@@ -84,6 +84,8 @@ const TabelMahasiswa = () => {
     return false;
   };
 
+  const content = mahasiswa.filter((data) => filterData(data));
+
   return (
     <Card>
       <PerfectScrollbar>
@@ -105,7 +107,7 @@ const TabelMahasiswa = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {mahasiswa.filter((data) => filterData(data)).slice(page * limit, (limit * page) + limit).map((data) => (
+              {content.slice(page * limit, (limit * page) + limit).map((data) => (
                 <TableRow hover key={data._id}>
                   <TableCell>
                     <Avatar
@@ -148,7 +150,7 @@ const TabelMahasiswa = () => {
       </PerfectScrollbar>
       <TablePagination
         component="div"
-        count={mahasiswa.length}
+        count={content.length}
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleLimitChange}
         page={page}

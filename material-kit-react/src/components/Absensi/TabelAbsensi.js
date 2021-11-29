@@ -76,7 +76,7 @@ const CustomerListResults = ({ customers }) => {
             <TableBody>
               {content
                 .slice(page * limit, (page * limit) + limit)
-                .map((data, index) => (
+                .map((data, i) => (
                   <TableRow hover key={data._id}>
                     <TableCell>
                       <Box
@@ -86,7 +86,7 @@ const CustomerListResults = ({ customers }) => {
                         }}
                       >
                         <Typography color="textPrimary" variant="body1">
-                          {index + 1}
+                          {(page * limit) + (i + 1)}
                         </Typography>
                       </Box>
                     </TableCell>
