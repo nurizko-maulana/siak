@@ -41,7 +41,7 @@ const CustomerListToolbar = () => {
                 value={filter.prodi}
                 onChange={(e) => {
                   console.log(e.target.value);
-                  dispatch(setFilter({ prodi: e.target.value }));
+                  dispatch(setFilter({ prodi: e.target.value.toLowerCase() }));
                 }}
                 InputProps={{
                   startAdornment: (

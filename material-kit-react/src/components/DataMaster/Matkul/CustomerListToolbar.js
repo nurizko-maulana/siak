@@ -52,7 +52,7 @@ const CustomerListToolbar = (props) => {
                 value={filter.matkul}
                 onChange={(e) => {
                   console.log(e.target.value);
-                  dispatch(setFilter({ matkul: e.target.value }));
+                  dispatch(setFilter({ matkul: e.target.value.toLowerCase() }));
                 }}
               />
             </Box>

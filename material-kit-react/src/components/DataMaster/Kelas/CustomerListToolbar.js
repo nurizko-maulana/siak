@@ -40,7 +40,7 @@ const CustomerListToolbar = (props) => {
                 fullWidth
                 value={filter.kelas}
                 onChange={(e) => {
-                  dispatch(setFilter({ kelas: e.target.value }));
+                  dispatch(setFilter({ kelas: e.target.value.toLowerCase() }));
                 }}
                 InputProps={{
                   startAdornment: (

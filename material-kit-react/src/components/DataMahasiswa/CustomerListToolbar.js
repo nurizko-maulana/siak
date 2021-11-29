@@ -52,7 +52,7 @@ const CustomerListToolbar = (props) => {
                 value={filter.mahasiswa}
                 onChange={(e) => {
                   console.log(e.target.value);
-                  dispatch(setFilter({ mahasiswa: e.target.value }));
+                  dispatch(setFilter({ mahasiswa: e.target.value.toLowerCase() }));
                 }}
               />
             </Box>
