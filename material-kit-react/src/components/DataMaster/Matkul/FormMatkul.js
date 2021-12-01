@@ -20,6 +20,7 @@ const AccountProfileDetails = (props) => {
   const [selectedMatkul, setMatkul] = useState('');
   const [selectedKodeMatkul, setKodeMatkul] = useState('');
   const [selectedSKS, setSKS] = useState('');
+  const [isUpload, setIsUpload] = useState(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -38,6 +39,7 @@ const AccountProfileDetails = (props) => {
   }, []);
   const submit = (e) => {
     e.preventDefault();
+    setIsUpload(true);
     if (edit) {
       const { _id } = matkul;
       axios
@@ -157,7 +159,7 @@ const AccountProfileDetails = (props) => {
             ) : (
               ''
             )}
-            <Button color="primary" variant="contained" type="submit">
+            <Button disabled={isUpload} color="primary" variant="contained" type="submit">
               Save
             </Button>
           </Stack>

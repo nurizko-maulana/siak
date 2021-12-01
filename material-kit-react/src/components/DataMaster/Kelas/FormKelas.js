@@ -25,6 +25,7 @@ const AccountProfileDetails = (props) => {
   const [selectedProdi, setSelectedProdi] = useState([]);
   const [matakuliah, setMataKuliah] = useState([]);
   const [prodi, setProdi] = useState([]);
+  const [isUpload, setIsUpload] = useState(false);
   const dispatch = useDispatch();
   const { kelas, edit } = useSelector((state) => state.master);
   // eslint-disable-next-line no-unused-vars
@@ -49,6 +50,7 @@ const AccountProfileDetails = (props) => {
 
   const submit = (e) => {
     e.preventDefault();
+    setIsUpload(true);
     if (edit) {
       axios
         .put(`${process.env.REACT_APP_API}kelas/${kelas._id}`, {
@@ -180,7 +182,7 @@ const AccountProfileDetails = (props) => {
             ) : (
               ''
             )}
-            <Button color="primary" variant="contained" type="submit">
+            <Button disabled={isUpload} color="primary" variant="contained" type="submit">
               Save
             </Button>
           </Stack>

@@ -34,6 +34,7 @@ const AccountProfileDetails = (props) => {
   const dispatch = useDispatch();
   const { edit, mahasiswa } = useSelector((state) => state.master);
   const [listProdi, setProdi] = useState([]);
+  const [isUpload, setIsUplaod] = useState(false);
   const [values, setValues] = useState({
     nim: '',
     nik: '',
@@ -86,6 +87,7 @@ const AccountProfileDetails = (props) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setIsUplaod(true);
     if (edit) {
       const form = new FormData(e.target);
       form.append('file', values.file);
@@ -104,6 +106,7 @@ const AccountProfileDetails = (props) => {
           console.log('respon mahasiswa', res);
           navigate('/app/mahasiswa');
           dispatch(updateData());
+          setIsUplaod(false);
         });
     } else {
       const form = new FormData(e.target);
@@ -500,7 +503,7 @@ const AccountProfileDetails = (props) => {
             ) : (
               ''
             )}
-            <Button color="primary" type="submit" variant="contained">
+            <Button disabled={isUpload} color="primary" type="submit" variant="contained">
               Save
             </Button>
           </Stack>

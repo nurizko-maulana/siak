@@ -32,6 +32,7 @@ import FormCardContent from './FormCardContent';
 const AccountProfileDetails = (props) => {
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
+  const [isUpload, setIsUpload] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -90,6 +91,7 @@ const AccountProfileDetails = (props) => {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
+    setIsUpload(true);
     axios
       .post(`${process.env.REACT_APP_API}absensi`, {
         id_matakuliah: values.matkul._id,
@@ -107,6 +109,7 @@ const AccountProfileDetails = (props) => {
       .then((res) => {
         console.log(res);
         navigate('/app/absensi');
+        setIsUpload(false);
       });
   };
 
@@ -261,7 +264,7 @@ const AccountProfileDetails = (props) => {
               Back
             </Button>
           ) : (
-            <Button color="primary" type="submit" variant="contained">
+            <Button disabled={isUpload} color="primary" type="submit" variant="contained">
               Save details
             </Button>
           )}

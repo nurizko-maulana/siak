@@ -22,6 +22,7 @@ const AccountProfileDetails = (props) => {
   const { ruangan, edit } = useSelector((state) => state.master);
 
   const [ruang, setRuang] = useState('');
+  const [isUpload, setIsUpload] = useState(false);
   useEffect(() => {
     if (edit) {
       setRuang(ruangan.ruang);
@@ -34,6 +35,7 @@ const AccountProfileDetails = (props) => {
 
   function submit(e) {
     e.preventDefault();
+    setIsUpload(true);
     if (edit) {
       const { _id } = ruangan;
       axios
@@ -129,7 +131,7 @@ const AccountProfileDetails = (props) => {
             ) : (
               ''
             )}
-            <Button color="primary" variant="contained" type="submit">
+            <Button disabled={isUpload} color="primary" variant="contained" type="submit">
               Save
             </Button>
           </Stack>

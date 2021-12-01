@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import moment from 'moment';
 import { makeStyles } from '@material-ui/styles';
+import QRCode from 'react-qr-code';
 
 const mixin = {
   border: '1px solid black',
@@ -10,6 +11,24 @@ const mixin = {
 };
 
 const useStyle = makeStyles({
+  h1: {
+    textAlign: 'center'
+  },
+  hidePrint: {
+    '@media print': {
+      display: 'none'
+    }
+  },
+  qr: {
+    '@media print': {
+      display: 'none'
+    },
+    margin: '1em'
+  },
+  qrContainer: {
+    display: 'flex',
+    justifyContent: 'center'
+  },
   table: {
     ...mixin,
     borderCollapse: 'collapse',
@@ -22,8 +41,8 @@ const useStyle = makeStyles({
     },
     '& td': {
       ...mixin
-    }
-  }
+    },
+  },
 });
 
 const Print = () => {
@@ -40,7 +59,11 @@ const Print = () => {
   }, []);
   return (
     <div>
-      <h1>LAPORAN ABSENSI</h1>
+      <h1 className={`${classes.h1} ${classes.hidePrint}`}>Scan this code for viewing at mobile screen</h1>
+      <div className={classes.qrContainer}>
+        <QRCode className={classes.qr} value="https://academic-xi.vercel.app/print" />
+      </div>
+      <h1 className={classes.h1}>LAPORAN ABSENSI</h1>
       <table style={{ border: '1px solid black' }} className={classes.table}>
         <tr>
           <th rowSpan={2}>NO</th>

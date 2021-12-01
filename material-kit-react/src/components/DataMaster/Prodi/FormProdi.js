@@ -22,6 +22,7 @@ import AlertMessage from '../../AlertMessage';
 const AccountProfileDetails = (props) => {
   const [selectedProdi, setProdi] = useState('');
   const [selectedKelas, setKelas] = useState([]);
+  const [isUpload, setIsUpload] = useState(false);
   const { edit, prodi } = useSelector((state) => state.master);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -32,6 +33,7 @@ const AccountProfileDetails = (props) => {
 
   const submit = (e) => {
     e.preventDefault();
+    setIsUpload(true);
     if (edit) {
       axios
         .put(`${process.env.REACT_APP_API}programStudi/${prodi._id}`, {
@@ -126,7 +128,7 @@ const AccountProfileDetails = (props) => {
             ) : (
               ''
             )}
-            <Button color="primary" variant="contained" type="submit">
+            <Button disabled={isUpload} color="primary" variant="contained" type="submit">
               Save
             </Button>
           </Stack>
