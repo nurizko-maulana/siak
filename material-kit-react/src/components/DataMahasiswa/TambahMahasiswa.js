@@ -253,10 +253,7 @@ const AccountProfileDetails = (props) => {
       loadKelas(mahasiswa.id_programStudi?._id);
     }
   }, []);
-
-  console.log('value', formik.values);
-  console.log('error', formik.errors);
-
+  
   return (
     <form id="form" autoComplete="off" {...props} onSubmit={formik.handleSubmit}>
       <Card>

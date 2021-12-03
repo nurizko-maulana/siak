@@ -89,8 +89,6 @@ const AccountProfileDetails = (props) => {
     }
   }, []);
 
-  console.log(formik);
-
   return (
     <form autoComplete="off" {...props} onSubmit={formik.handleSubmit}>
       <Card>

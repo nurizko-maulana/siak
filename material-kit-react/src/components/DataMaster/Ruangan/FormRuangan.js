@@ -94,9 +94,6 @@ const AccountProfileDetails = (props) => {
     }
   }, []);
 
-  console.log('form values', formik);
-  console.log('form error', formik.errors);
-
   return (
     <form autoComplete="off" {...props} onSubmit={formik.handleSubmit}>
       <Card>

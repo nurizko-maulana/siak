@@ -165,7 +165,7 @@ const AccountProfileDetails = (props) => {
       handleChange(formik.values.matkul && formik.values.matkul.sks, 'sks');
     }
   }, [formik.values.matkul]);
-  console.log(formik.values);
+  
   return (
     <form autoComplete="off" {...props} onSubmit={formik.handleSubmit}>
       <Card>
