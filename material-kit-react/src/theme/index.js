@@ -23,7 +23,7 @@ const theme = createTheme({
       disabled: '#172b4d'
     },
     action: {
-      disabled: '#5664d2'
+      disabled: 'black'
     }
   },
   shadows: [

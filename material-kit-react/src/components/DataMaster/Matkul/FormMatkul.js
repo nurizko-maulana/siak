@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import {
   Box,
   Button,
@@ -11,17 +11,14 @@ import {
   Stack
 } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { updateData, setAlertTrue } from '../../../store/action/masterAction';
 import AlertMessage from '../../AlertMessage';
 
 const AccountProfileDetails = (props) => {
-  const [selectedMatkul, setMatkul] = useState('');
-  const [selectedKodeMatkul, setKodeMatkul] = useState('');
-  const [selectedSKS, setSKS] = useState('');
-  const [isUpload, setIsUpload] = useState(false);
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { matkul, edit } = useSelector((state) => state.master);
@@ -30,68 +27,90 @@ const AccountProfileDetails = (props) => {
     dispatch(setAlertTrue(data));
   };
 
-  useEffect(() => {
-    if (edit) {
-      setMatkul(matkul.nama);
-      setKodeMatkul(matkul.kode);
-      setSKS(matkul.sks);
-    }
-  }, []);
-  const submit = (e) => {
-    e.preventDefault();
-    setIsUpload(true);
-    if (edit) {
-      const { _id } = matkul;
-      axios
-        .put(`${process.env.REACT_APP_API}matakuliah/${_id} `, {
-          kode: selectedKodeMatkul.trim(),
-          sks: selectedSKS.trim(),
-          nama: selectedMatkul.trim()
-        })
-        .then((res) => {
-          console.log(res);
-          navigate('/app/master/matkul');
-          dispatch(updateData());
-        })
-        .catch((err) => {
-          console.log(err.response.status);
+  const validationSchema = Yup.object({
+    kode: Yup.string().required('Required!'),
+    matkul: Yup.string().required('Required!'),
+    sks: Yup.number().required('Required!')
+  });
 
-          if (err.response.status === 412) {
-            handleClickOpen();
-            console.log('ok');
-          }
-        });
-    } else {
-      axios
-        .post(`${process.env.REACT_APP_API}matakuliah`, {
-          id: new Date().getTime(),
-          kode: selectedKodeMatkul.trim(),
-          nama: selectedMatkul.trim(),
-          sks: selectedSKS.trim()
-        })
-        .then((res) => {
-          // console.log(res);
-          if (res.status === '412') {
-            console.log(res);
-            handleClickOpen();
-          } else {
-            navigate('/app/master/matkul');
-            console.warn('res', res);
-          }
-        })
-        .catch((err) => {
-          console.log(err.response.status);
-
-          if (err.response.status === 412) {
-            handleClickOpen();
-            console.log('ok');
-          }
-        });
-    }
+  const initialValues = {
+    kode: '',
+    matkul: '',
+    sks: '',
   };
 
+  const formik = useFormik({
+    initialValues,
+    onSubmit: (values, onSubmitProps) => {
+      console.log('ok');
+      if (edit) {
+        const { _id } = matkul;
+        axios
+          .put(`${process.env.REACT_APP_API}matakuliah/${_id} `, {
+            kode: values.kode.trim(),
+            nama: values.matkul.trim(),
+            sks: values.sks
+          })
+          .then((res) => {
+            console.log(res);
+            navigate('/app/master/matkul');
+            dispatch(updateData());
+          })
+          .catch((err) => {
+            console.log(err.response.status);
+
+            if (err.response.status === 412) {
+              handleClickOpen();
+              console.log('ok');
+            }
+            onSubmitProps.setSubmitting(false);
+          });
+      } else {
+        axios
+          .post(`${process.env.REACT_APP_API}matakuliah`, {
+            id: new Date().getTime(),
+            kode: values.kode.trim(),
+            nama: values.matkul.trim(),
+            sks: values.sks
+          })
+          .then((res) => {
+            // console.log(res);
+            if (res.status === '412') {
+              console.log(res);
+              handleClickOpen();
+            } else {
+              navigate('/app/master/matkul');
+              console.warn('res', res);
+            }
+          })
+          .catch((err) => {
+            console.log(err.response.status);
+
+            if (err.response.status === 412) {
+              handleClickOpen();
+              console.log('ok');
+            }
+            onSubmitProps.setSubmitting(false);
+          });
+      }
+    },
+    validationSchema,
+    validateOnMount: true,
+    enableReinitialization: true
+  });
+
+  useEffect(() => {
+    if (edit) {
+      formik.setFieldValue('matkul', matkul.nama);
+      formik.setFieldValue('kode', matkul.kode);
+      formik.setFieldValue('sks', matkul.sks);
+    }
+  }, []);
+
+  // console.log(formik);
+
   return (
-    <form autoComplete="off" {...props} onSubmit={(e) => submit(e)}>
+    <form autoComplete="off" {...props} onSubmit={formik.handleSubmit}>
       <Card>
         <CardHeader
           subheader="Lengkapi Data Berikut"
@@ -104,35 +123,38 @@ const AccountProfileDetails = (props) => {
             <Grid item md={12} xs={12}>
               <TextField
                 fullWidth
+                helperText={formik.touched.kode && formik.errors.kode ? formik.errors.kode : ''}
+                error={formik.touched.kode && !!formik.errors.kode}
                 type="text"
                 label="Kode Matakuliah"
-                name="Kode"
-                onChange={(e) => setKodeMatkul(e.target.value)}
+                name="kode"
+                {...formik.getFieldProps('kode')}
                 required
-                value={selectedKodeMatkul}
                 variant="outlined"
               />
             </Grid>
             <Grid item md={12} xs={12}>
               <TextField
                 fullWidth
+                helperText={formik.touched.matkul && formik.errors.matkul ? formik.errors.matkul : ''}
                 label="Matakuliah"
-                name="mata kuliah"
-                onChange={(e) => setMatkul(e.target.value)}
+                name="matkul"
+                {...formik.getFieldProps('matkul')}
                 required
-                value={selectedMatkul}
+                error={formik.touched.matkul && !!formik.errors.matkul}
                 variant="outlined"
               />
             </Grid>
             <Grid item md={12} xs={12}>
               <TextField
                 fullWidth
+                helperText={formik.touched.sks && formik.errors.sks ? formik.errors.sks : ''}
                 type="number"
                 label="Jumlah SKS"
-                name="mata kuliah"
-                onChange={(e) => setSKS(e.target.value)}
+                name="sks"
+                {...formik.getFieldProps('sks')}
+                error={formik.touched.sks && !!formik.errors.sks}
                 required
-                value={selectedSKS}
                 variant="outlined"
               />
             </Grid>
@@ -159,7 +181,7 @@ const AccountProfileDetails = (props) => {
             ) : (
               ''
             )}
-            <Button disabled={isUpload} color="primary" variant="contained" type="submit">
+            <Button disabled={!formik.isValid || formik.isSubmitting} color="primary" variant="contained" type="submit">
               Save
             </Button>
           </Stack>

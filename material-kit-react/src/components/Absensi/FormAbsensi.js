@@ -24,6 +24,8 @@ import {
   FormControlLabel,
   FormControl
 } from '@material-ui/core';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import { useDeepCompareEffectNoCheck } from 'use-deep-compare-effect';
 import { updateData } from '../../store/action/masterAction';
 
@@ -46,7 +48,8 @@ const AccountProfileDetails = (props) => {
     setPage(newPage);
   };
   const [prodi, setProdi] = useState([]);
-  const [values, setValues] = useState({
+
+  const initialValues = {
     kelas: null,
     matkul: null,
     mahasiswa: null,
@@ -55,15 +58,51 @@ const AccountProfileDetails = (props) => {
     start: null,
     end: null,
     sks: null
+  };
+
+  const validationSchema = Yup.object({
+    kelas: Yup.mixed().required('Required!'),
+    matkul: Yup.mixed().required('Required!'),
+    mahasiswa: Yup.mixed().required('Required!'),
+    prodi: Yup.mixed().required('Required!'),
+    tanggal: Yup.mixed().required('Required!'),
+    start: Yup.mixed().required('Required!'),
+    end: Yup.mixed().required('Required!'),
+    sks: Yup.mixed().required('Required!')
   });
 
+  const formik = useFormik({
+    initialValues,
+    validationSchema,
+    onSubmit: (values) => {
+      axios
+        .post(`${process.env.REACT_APP_API}absensi`, {
+          id_matakuliah: values.matkul._id,
+          id_kelas: values.kelas._id,
+          jam: {
+            masuk: values.start,
+            keluar: values.end
+          },
+          tanggal: values.tanggal,
+          absensi: values.mahasiswa.map((data) => ({
+            id_mahasiswa: data._id,
+            keterangan: data.keterangan
+          }))
+        })
+        .then((res) => {
+          console.log(res);
+          // navigate('/app/absensi');
+          setIsUpload(false);
+        });
+    }
+  });
   const getMahasiswa = () => {
-    console.log('values', values);
+    console.log('values', formik.values);
     axios
       .get(`${process.env.REACT_APP_API}absensi/laporan`, {
         params: {
-          matakuliah: values.matkul?._id,
-          kelas: values.kelas?._id
+          matakuliah: formik.values.matkul?._id,
+          kelas: formik.values.kelas?._id
         }
       })
       .then((res) => {
@@ -72,15 +111,12 @@ const AccountProfileDetails = (props) => {
   };
 
   const handleChange = (event, name) => {
-    setValues((v) => ({
-      ...v,
-      [name]: event
-    }));
+    formik.setFieldValue(name, event);
   };
 
   const handleChangeKehadiran = (e, index) => {
-    setValues((v) => {
-      const p = { ...v };
+    formik.setFieldValue(() => {
+      const p = { ...formik.values };
       p.mahasiswa[index].keterangan =
         e.target.value === 'hadir' ? 'hadir' : 'absen';
       console.log(p);
@@ -88,29 +124,6 @@ const AccountProfileDetails = (props) => {
         ...p
       };
     });
-  };
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setIsUpload(true);
-    axios
-      .post(`${process.env.REACT_APP_API}absensi`, {
-        id_matakuliah: values.matkul._id,
-        id_kelas: values.kelas._id,
-        jam: {
-          masuk: values.start,
-          keluar: values.end
-        },
-        tanggal: values.tanggal,
-        absensi: values.mahasiswa.map((data) => ({
-          id_mahasiswa: data._id,
-          keterangan: data.keterangan
-        }))
-      })
-      .then((res) => {
-        console.log(res);
-        navigate('/app/absensi');
-        setIsUpload(false);
-      });
   };
 
   const getProdi = () => {
@@ -132,21 +145,29 @@ const AccountProfileDetails = (props) => {
       handleChange(absensi.id_matakuliah[0].sks, 'sks');
       handleChange(absensi.tanggal, 'tanggal');
       handleChange(absensi.absensi, 'mahasiswa');
+      formik.setFieldValue('start', absensi.masuk);
+      formik.setFieldValue('end', absensi.keluar);
+      formik.setFieldValue('prodi', absensi.id_kelas[0]?.id_programStudi);
+      formik.setFieldValue('kelas', absensi.id_kelas[0]);
+      formik.setFieldValue('matkul', absensi.id_matakuliah[0]);
+      formik.setFieldValue('kode', absensi.id_matakuliah[0].kode);
+      formik.setFieldValue('sks', absensi.id_matakuliah[0].sks);
+      formik.setFieldValue('tanggal', absensi.tanggal);
+      formik.setFieldValue('mahasiswa', absensi.absensi);
     } else {
       getProdi();
     }
   }, []);
 
   useDeepCompareEffectNoCheck(() => {
-    if (values.matkul) {
-      // getMahasiswa();
-      handleChange(values.matkul && values.matkul.kode, 'kode');
-      handleChange(values.matkul && values.matkul.sks, 'sks');
+    if (formik.values.matkul) {
+      handleChange(formik.values.matkul && formik.values.matkul.kode, 'kode');
+      handleChange(formik.values.matkul && formik.values.matkul.sks, 'sks');
     }
-  }, [values.matkul]);
-
+  }, [formik.values.matkul]);
+  console.log(formik.values);
   return (
-    <form autoComplete="off" {...props} onSubmit={(e) => handleSubmit(e)}>
+    <form autoComplete="off" {...props} onSubmit={formik.handleSubmit}>
       <Card>
         <CardHeader
           subheader="Lengkapi Data Berikut"
@@ -157,7 +178,8 @@ const AccountProfileDetails = (props) => {
         <FormCardContent
           prodi={prodi}
           handleChange={handleChange}
-          values={values}
+          values={formik.values}
+          errors={formik.errors}
         />
 
         <Card>
@@ -173,20 +195,20 @@ const AccountProfileDetails = (props) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {values?.mahasiswa?.slice(0, limit).map((data, index) => {
+                  {formik.values?.mahasiswa?.slice(0, limit).map((data, index) => {
                     let nama = '';
                     const space = ' ';
 
                     if (edit) {
                       nama =
-                        values.mahasiswa[index].firstName +
+                        formik.values.mahasiswa[index].firstName +
                         space +
-                        values.mahasiswa[index].lastName;
+                        formik.values.mahasiswa[index].lastName;
                     } else {
                       nama =
-                        values.mahasiswa[index].firstName +
+                        formik.values.mahasiswa[index].firstName +
                         space +
-                        values.mahasiswa[index].lastName;
+                        formik.values.mahasiswa[index].lastName;
                     }
                     return (
                       <TableRow hover key={data._id}>
@@ -210,7 +232,7 @@ const AccountProfileDetails = (props) => {
                               aria-label="gender"
                               onChange={(e) => handleChangeKehadiran(e, index)}
                               name="keterangan"
-                              value={values.mahasiswa[index].keterangan}
+                              value={formik.values.mahasiswa[index].keterangan}
                             >
                               <FormControlLabel
                                 /* eslint-disable-next-line */
@@ -255,7 +277,7 @@ const AccountProfileDetails = (props) => {
             <Button
               color="primary"
               onClick={() => {
-                navigate(-1);
+                navigate('/app/absensi');
                 dispatch(updateData());
               }}
               on
@@ -264,7 +286,7 @@ const AccountProfileDetails = (props) => {
               Back
             </Button>
           ) : (
-            <Button disabled={isUpload} color="primary" type="submit" variant="contained">
+            <Button disabled={!formik.isValid || formik.isSubmitting} color="primary" type="submit" variant="contained">
               Save details
             </Button>
           )}

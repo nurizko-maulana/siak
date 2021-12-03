@@ -16,6 +16,8 @@ import {
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import { updateData, setAlertTrue } from '../../../store/action/masterAction';
 import AlertMessage from '../../AlertMessage';
 
@@ -48,68 +50,88 @@ const AccountProfileDetails = (props) => {
     dispatch(setAlertTrue(data));
   };
 
-  const submit = (e) => {
-    e.preventDefault();
-    setIsUpload(true);
-    if (edit) {
-      axios
-        .put(`${process.env.REACT_APP_API}kelas/${kelas._id}`, {
-          nama: selectedKelas.trim(),
-          id_matakuliah: selectedMatkul.map((matkul) => matkul._id)
-        })
-        .then((res) => {
-          console.log(res);
-          dispatch(updateData());
-          navigate('/app/master/kelas');
-        })
-        .catch((err) => {
-          console.log(err.response.status);
-          if (err.response.status === 412) {
-            handleClickOpen();
-            console.log('ok');
-          }
-        });
-    } else {
-      console.log({
-        id: new Date().getTime(),
-        kelas: selectedKelas.trim(),
-        matakuliah: selectedMatkul.map((matkul) => matkul._id),
-        id_programStudi: selectedProdi._id
-      });
-      axios
-        .post(`${process.env.REACT_APP_API}kelas`, {
-          id: new Date().getTime(),
-          nama: selectedKelas.trim(),
-          id_matakuliah: selectedMatkul.map((matkul) => matkul._id),
-          id_programStudi: selectedProdi._id
-        })
-        .then((res) => {
-          console.log(res);
-          navigate('/app/master/kelas');
-        })
-        .catch((err) => {
-          console.log(err.response.status);
-
-          if (err.response.status === 412) {
-            handleClickOpen();
-            console.log('ok');
-          }
-        });
-    }
+  const initialValues = {
+    kelas: '',
+    prodi: {},
+    matkul: [],
   };
+
+  const validationSchema = Yup.object({
+    kelas: Yup.string().required('Required!'),
+    prodi: Yup.mixed().required('Required!')
+  });
+
+  const formik = useFormik({
+    initialValues,
+    validationSchema,
+    // validateOnMount: true,
+    onSubmit: (values, onSubmitProps) => {
+      setIsUpload(true);
+      if (edit) {
+        axios
+          .put(`${process.env.REACT_APP_API}kelas/${kelas._id}`, {
+            nama: values.kelas.trim(),
+            id_matakuliah: values.matkul.map((matkul) => matkul._id),
+            id_programStudi: values.prodi._id
+          })
+          .then((res) => {
+            console.log(res);
+            dispatch(updateData());
+            navigate('/app/master/kelas');
+          })
+          .catch((err) => {
+            console.log(err.response.status);
+            if (err.response.status === 412) {
+              handleClickOpen();
+              console.log('ok');
+            }
+            onSubmitProps.setSubmitting(false);
+          });
+      } else {
+        console.log({
+          id: new Date().getTime(),
+          kelas: selectedKelas.trim(),
+          matakuliah: selectedMatkul.map((matkul) => matkul._id),
+          id_programStudi: selectedProdi._id
+        });
+        axios
+          .post(`${process.env.REACT_APP_API}kelas`, {
+            id: new Date().getTime(),
+            nama: values.kelas.trim(),
+            id_matakuliah: values.matkul.map((matkul) => matkul._id),
+            id_programStudi: values.prodi._id
+          })
+          .then((res) => {
+            console.log(res);
+            navigate('/app/master/kelas');
+          })
+          .catch((err) => {
+            console.log(err.response.status);
+            if (err.response.status === 412) {
+              handleClickOpen();
+              console.log('ok');
+            }
+            onSubmitProps.setSubmitting(false);
+          });
+      }
+    }
+  });
 
   useEffect(() => {
     getMataKuliah();
     getProdi();
     if (edit) {
-      setKelas(kelas.nama);
-      setSelectedProdi(kelas.id_programStudi);
-      setSelectedMataKuliah(kelas.id_matakuliah);
-      console.log('matkul', selectedMatkul);
+      formik.setFieldValue('kelas', kelas.nama);
+      formik.setFieldValue('prodi', kelas.id_programStudi);
+      formik.setFieldValue('matkul', kelas.id_matakuliah);
     }
   }, []);
+
+  console.log(formik.errors);
+  console.log(formik.values);
+
   return (
-    <form autoComplete="off" {...props} onSubmit={(e) => submit(e)}>
+    <form autoComplete="off" {...props} onSubmit={formik.handleSubmit}>
       <Card>
         <CardHeader subheader="Lengkapi Data Berikut" title="Tambah Kelas" />
         <Divider />
@@ -118,12 +140,12 @@ const AccountProfileDetails = (props) => {
             <Grid item md={12} xs={12}>
               <TextField
                 fullWidth
-                helperText="Masukan Kelas yang Sesuai"
                 label="Kelas"
-                name="Kode"
-                onChange={(e) => setKelas(e.target.value)}
+                name="kelas"
+                helperText={formik.touched.kelas && formik.errors.kelas ? formik.errors.kelas : ''}
+                error={formik.touched.kelas && !!formik.errors.kelas}
+                {...formik.getFieldProps('kelas')}
                 required
-                value={selectedKelas}
                 variant="outlined"
               />
             </Grid>
@@ -133,13 +155,17 @@ const AccountProfileDetails = (props) => {
                 options={prodi}
                 getOptionLabel={(option) => option.nama || ''}
                 filterSelectedOptions
-                value={selectedProdi}
-                onChange={(e, value) => {
-                  setSelectedProdi(value);
-                  console.log('selected prodi', selectedProdi);
-                }}
+                onChange={(e, value) => formik.setFieldValue('prodi', value)}
+                value={formik.values.prodi}
+                onBlur={formik.handleBlur}
                 renderInput={(params) => (
-                  <TextField {...params} required label="Program Studi" />
+                  <TextField
+                    {...params}
+                    required
+                    error={formik.touched.prodi && !!formik.errors.prodi}
+                    helperText={formik.touched.prodi && formik.errors.prodi ? formik.errors.prodi : ''}
+                    label="Program Studi"
+                  />
                 )}
               />
             </Grid>
@@ -150,11 +176,9 @@ const AccountProfileDetails = (props) => {
                 options={matakuliah}
                 getOptionLabel={(option) => option.nama || ''}
                 filterSelectedOptions
-                value={selectedMatkul}
-                onChange={(e, value) => {
-                  setSelectedMataKuliah(value);
-                  console.log('selected matkul', selectedMatkul);
-                }}
+                onChange={(e, value) => formik.setFieldValue('matkul', value)}
+                value={formik.values.matkul}
+                onBlur={formik.handleBlur}
                 renderInput={(params) => (
                   <TextField {...params} requried label="Matakuliah" />
                 )}
@@ -182,7 +206,7 @@ const AccountProfileDetails = (props) => {
             ) : (
               ''
             )}
-            <Button disabled={isUpload} color="primary" variant="contained" type="submit">
+            <Button disabled={!formik.isValid || formik.isSubmitting} color="primary" variant="contained" type="submit">
               Save
             </Button>
           </Stack>

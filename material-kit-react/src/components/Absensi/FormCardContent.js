@@ -177,6 +177,7 @@ FormCardContent.propTypes = {
   prodi: PropTypes.array,
   handleChange: PropTypes.func,
   values: PropTypes.object,
+  // errors: PropTypes.object,
   edit: PropTypes.bool
 };
 export default FormCardContent;

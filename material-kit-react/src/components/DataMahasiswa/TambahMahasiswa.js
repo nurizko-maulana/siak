@@ -26,6 +26,8 @@ import {
 } from '@material-ui/core';
 
 import axios from 'axios';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import { updateData } from '../../store/action/masterAction';
 
@@ -34,8 +36,35 @@ const AccountProfileDetails = (props) => {
   const dispatch = useDispatch();
   const { edit, mahasiswa } = useSelector((state) => state.master);
   const [listProdi, setProdi] = useState([]);
-  const [isUpload, setIsUplaod] = useState(false);
-  const [values, setValues] = useState({
+  // const [values, setValues] = useState({
+  //   nim: '',
+  //   nik: '',
+  //   nama: '',
+  //   firstName: '',
+  //   lastName: '',
+  //   jenisKelamin: '',
+  //   programStudi: {},
+  //   kelas: {},
+  //   email: '',
+  //   alamat: '',
+  //   jalan: '',
+  //   noTelp: '',
+  //   alamatOrtu: '',
+  //   file: null,
+  //   image: null,
+  //   provinsi: [],
+  //   kabupaten: [],
+  //   kecamatan: [],
+  //   provinsiOrtu: [],
+  //   kabupatenOrtu: [],
+  //   kecamatanOrtu: []
+  // });
+
+  const [selectedProvince, setProvince] = useState({});
+  const [selectedKabupaten, setKabupaten] = useState({});
+  const [selectedKecamatan, setKecamatan] = useState({});
+
+  const initialValues = {
     nim: '',
     nik: '',
     nama: '',
@@ -45,10 +74,8 @@ const AccountProfileDetails = (props) => {
     programStudi: {},
     kelas: {},
     email: '',
-    alamat: '',
     jalan: '',
     noTelp: '',
-    alamatOrtu: '',
     file: null,
     image: null,
     provinsi: [],
@@ -57,20 +84,78 @@ const AccountProfileDetails = (props) => {
     provinsiOrtu: [],
     kabupatenOrtu: [],
     kecamatanOrtu: []
+  };
+
+  const validationSchema = Yup.object({
+    nim: Yup.string().required('Required!'),
+    nik: Yup.number().required('Required!'),
+    firstName: Yup.mixed().required('Required!'),
+    lastName: Yup.mixed().required('Required!'),
+    jenisKelamin: Yup.mixed().required('Required!'),
+    programStudi: Yup.mixed().required('Required!'),
+    kelas: Yup.mixed().required('Required!'),
+    email: Yup.string().email().required('Required!'),
+    jalan: Yup.mixed().required('Required!'),
+    noTelp: Yup.string().required('Required!'),
+    file: Yup.mixed().required('Required!'),
+    image: Yup.mixed().required('Required!'),
   });
 
-  const [selectedProvince, setProvince] = useState({});
-  const [selectedKabupaten, setKabupaten] = useState({});
-  const [selectedKecamatan, setKecamatan] = useState({});
+  const formik = useFormik({
+    initialValues,
+    validationSchema,
+    onSubmit: (values, onSubmitProps) => {
+      if (edit) {
+        const data = document.getElementById('form');
+        const form = new FormData(data);
+        form.append('file', values.file);
+        form.append('id_programStudi', values.programStudi._id);
+        form.append('id_kelas', values.kelas._id);
+        form.append('provinsi', selectedProvince.nama);
+        form.append('kecamatan', selectedKabupaten.nama);
+        form.append('kabupaten', selectedKabupaten.nama);
+        axios
+          .put(`${process.env.REACT_APP_API}mahasiswa/${mahasiswa._id}`, form, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          })
+          .then((res) => {
+            console.log('respon mahasiswa', res);
+            navigate('/app/mahasiswa');
+            dispatch(updateData());
+          });
+      } else {
+        const data = document.getElementById('form');
+        const form = new FormData(data);
+        form.append('file', values.file);
+        form.append('id_programStudi', values.programStudi._id);
+        form.append('id_kelas', values.kelas._id);
+        form.append('provinsi', selectedProvince.nama);
+        form.append('kecamatan', selectedKabupaten.nama);
+        form.append('kabupaten', selectedKabupaten.nama);
+        axios
+          .post(`${process.env.REACT_APP_API}mahasiswa/`, form, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          })
+          .then((res) => {
+            console.log('respon mahasiswa', res);
+            navigate('/app/mahasiswa');
+          });
+      }
+    }
+  });
 
   const handleChange = (event) => {
-    setValues((v) => ({
+    formik.setFieldValue((v) => ({
       ...v,
       [event.target.name]: event.target.value
     }));
   };
   const handleChangeAutocomplete = (name, value) => {
-    setValues((v) => ({
+    formik.setFieldValue((v) => ({
       ...v,
       [name]: value
     }));
@@ -78,55 +163,8 @@ const AccountProfileDetails = (props) => {
 
   const handleSelectFile = (event) => {
     console.log(event.target.files[0]);
-    setValues((v) => ({
-      ...v,
-      file: event.target.files[0],
-      image: URL.createObjectURL(event.target.files[0])
-    }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setIsUplaod(true);
-    if (edit) {
-      const form = new FormData(e.target);
-      form.append('file', values.file);
-      form.append('id_programStudi', values.programStudi._id);
-      form.append('id_kelas', values.kelas._id);
-      form.append('provinsi', selectedProvince.nama);
-      form.append('kecamatan', selectedKabupaten.nama);
-      form.append('kabupaten', selectedKabupaten.nama);
-      axios
-        .put(`${process.env.REACT_APP_API}mahasiswa/${mahasiswa._id}`, form, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        })
-        .then((res) => {
-          console.log('respon mahasiswa', res);
-          navigate('/app/mahasiswa');
-          dispatch(updateData());
-          setIsUplaod(false);
-        });
-    } else {
-      const form = new FormData(e.target);
-      form.append('file', values.file);
-      form.append('id_programStudi', values.programStudi._id);
-      form.append('id_kelas', values.kelas._id);
-      form.append('provinsi', selectedProvince.nama);
-      form.append('kecamatan', selectedKabupaten.nama);
-      form.append('kabupaten', selectedKabupaten.nama);
-      axios
-        .post(`${process.env.REACT_APP_API}mahasiswa/`, form, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        })
-        .then((res) => {
-          console.log('respon mahasiswa', res);
-          navigate('/app/mahasiswa');
-        });
-    }
+    formik.setFieldValue('file', event.target.files[0]);
+    formik.setFieldValue('image', URL.createObjectURL(event.target.files[0]));
   };
 
   const getProdi = () => {
@@ -173,7 +211,7 @@ const AccountProfileDetails = (props) => {
     axios
       .get(`${process.env.REACT_APP_API}programStudi/${id}`)
       .then((res) => {
-        setValues(({ programStudi, ...v }) => ({
+        formik.setFieldValue(({ programStudi, ...v }) => ({
           ...v,
           programStudi: {
             ...programStudi,
@@ -195,7 +233,7 @@ const AccountProfileDetails = (props) => {
     getProdi();
     loadProvinsi();
     if (edit) {
-      setValues((v) => ({
+      formik.setFieldValue((v) => ({
         ...v,
         nim: mahasiswa.nim,
         nik: mahasiswa.nik,
@@ -216,8 +254,11 @@ const AccountProfileDetails = (props) => {
     }
   }, []);
 
+  console.log('value', formik.values);
+  console.log('error', formik.errors);
+
   return (
-    <form autoComplete="off" {...props} onSubmit={handleSubmit}>
+    <form id="form" autoComplete="off" {...props} onSubmit={formik.handleSubmit}>
       <Card>
         <CardHeader
           subheader="Lengkapi Data Berikut"
@@ -235,9 +276,10 @@ const AccountProfileDetails = (props) => {
                       label="NIM"
                       name="nim"
                       type="number"
-                      onChange={handleChange}
+                      {...formik.getFieldProps('nim')}
+                      helperText={formik.touched.nim && formik.errors.nim ? formik.errors.nim : ''}
+                      error={formik.touched.nim && !!formik.errors.nim}
                       required
-                      value={values.nim}
                       variant="outlined"
                     />
                   </Grid>
@@ -246,9 +288,10 @@ const AccountProfileDetails = (props) => {
                       fullWidth
                       label="Nama Depan"
                       name="firstName"
-                      onChange={handleChange}
+                      {...formik.getFieldProps('firstName')}
+                      helperText={formik.touched.firstName && formik.errors.firstName ? formik.errors.firstName : ''}
+                      error={formik.touched.firstName && !!formik.errors.firstName}
                       required
-                      value={values.firstName}
                       variant="outlined"
                     />
                   </Grid>
@@ -257,9 +300,10 @@ const AccountProfileDetails = (props) => {
                       fullWidth
                       label="Nama Belakang"
                       name="lastName"
-                      onChange={handleChange}
+                      {...formik.getFieldProps('lastName')}
+                      helperText={formik.touched.lastName && formik.errors.lastName ? formik.errors.lastName : ''}
+                      error={formik.touched.lastName && !!formik.errors.lastName}
                       required
-                      value={values.lastName}
                       variant="outlined"
                     />
                   </Grid>
@@ -269,9 +313,10 @@ const AccountProfileDetails = (props) => {
                       label="Email "
                       name="email"
                       type="email"
-                      onChange={handleChange}
+                      {...formik.getFieldProps('email')}
+                      helperText={formik.touched.email && formik.errors.email ? formik.errors.email : ''}
+                      error={formik.touched.email && !!formik.errors.email}
                       required
-                      value={values.email}
                       variant="outlined"
                     />
                   </Grid>
@@ -281,7 +326,7 @@ const AccountProfileDetails = (props) => {
                         getOptionLabel={(p) => p.nama || ''}
                         disablePortal
                         id="combo-box-demo"
-                        options={values.provinsi}
+                        options={formik.values.provinsi}
                         value={selectedProvince}
                         isOptionEqualToValue={(opt) =>
                           selectedProvince.id === opt.id
@@ -318,7 +363,7 @@ const AccountProfileDetails = (props) => {
                           setKecamatan('');
                         }}
                         id="combo-box-demo"
-                        options={values.kabupaten}
+                        options={formik.values.kabupaten}
                         sx={{ width: 300, marginBottom: '1em' }}
                         renderInput={(params) => (
                           <TextField {...params} label="Kabupaten" />
@@ -328,7 +373,7 @@ const AccountProfileDetails = (props) => {
                         getOptionLabel={(p) => p.nama || ''}
                         disablePortal
                         id="combo-box-demo"
-                        options={values.kecamatan}
+                        options={formik.values.kecamatan}
                         value={selectedKecamatan}
                         isOptionEqualToValue={(opt) =>
                           selectedKecamatan.id === opt.id
@@ -352,9 +397,10 @@ const AccountProfileDetails = (props) => {
                       fullWidth
                       label="Jalan"
                       name="jalan"
-                      onChange={handleChange}
+                      {...formik.getFieldProps('jalan')}
+                      helperText={formik.touched.jalan && formik.errors.jalan ? formik.errors.jalan : ''}
+                      error={formik.touched.jalan && !!formik.errors.jalan}
                       required
-                      value={values.jalan}
                       variant="outlined"
                     />
                   </Grid>
@@ -364,9 +410,10 @@ const AccountProfileDetails = (props) => {
                       required
                       label="Nomor Telpon"
                       name="noTelp"
-                      onChange={handleChange}
+                      {...formik.getFieldProps('noTelp')}
+                      helperText={formik.touched.noTelp && formik.errors.noTelp ? formik.errors.noTelp : ''}
+                      error={formik.touched.noTelp && !!formik.errors.noTelp}
                       type="number"
-                      value={values.noTelp}
                       variant="outlined"
                     />
                   </Grid>
@@ -378,10 +425,10 @@ const AccountProfileDetails = (props) => {
                 <Grid container spacing={3}>
                   <Grid item md={12} xs={12}>
                     <Typography sx={{ py: 1.25 }}>Foto Profil</Typography>
-                    {values.image ? (
+                    {formik.values.image ? (
                       <img
                         alt="foto profil"
-                        src={values.image}
+                        src={formik.values.image}
                         width="200"
                         height="200"
                       />
@@ -399,9 +446,10 @@ const AccountProfileDetails = (props) => {
                       label="NIK"
                       name="nik"
                       type="number"
-                      onChange={handleChange}
+                      {...formik.getFieldProps('nik')}
+                      helperText={formik.touched.nik && formik.errors.nik ? formik.errors.nik : ''}
+                      error={formik.touched.nik && !!formik.errors.nik}
                       required
-                      value={values.nik}
                       variant="outlined"
                     />
                   </Grid>
@@ -411,9 +459,9 @@ const AccountProfileDetails = (props) => {
                       <RadioGroup
                         row
                         aria-label="gender"
-                        onChange={handleChange}
+                        onChange={formik.handleChange}
+                        value={formik.values.jenisKelamin}
                         name="jenisKelamin"
-                        value={values.jenisKelamin}
                       >
                         <FormControlLabel
                           value="Laki-laki"
@@ -437,10 +485,10 @@ const AccountProfileDetails = (props) => {
                       getOptionLabel={(option) => option.nama || ''}
                       filterSelectedOptions
                       required
-                      value={values?.programStudi}
+                      value={formik.values?.programStudi}
                       onChange={(e, value) => {
-                        handleChangeAutocomplete('programStudi', value);
-                        handleChangeAutocomplete('kelas', '');
+                        formik.setFieldValue('programStudi', value);
+                        formik.setFieldValue('kelas', '');
                         console.log('prodi', value);
                       }}
                       renderInput={(params) => (
@@ -453,14 +501,14 @@ const AccountProfileDetails = (props) => {
                       id="tags-outlined"
                       options={(() => {
                         if (
-                          values &&
-                          values.programStudi &&
-                          Object.keys(values.programStudi).length
+                          formik.values &&
+                          formik.values.programStudi &&
+                          Object.keys(formik.values.programStudi).length
                         ) {
                           if (edit) {
-                            return values.programStudi.id_kelas;
+                            return formik.values.programStudi.id_kelas;
                           }
-                          return values.programStudi.kelas;
+                          return formik.values.programStudi.kelas;
                         }
                         return [];
                       })()}
@@ -468,9 +516,9 @@ const AccountProfileDetails = (props) => {
                       getOptionLabel={(option) => option.nama || ''}
                       filterSelectedOptions
                       required
-                      value={values.kelas}
+                      value={formik.values.kelas}
                       onChange={(e, value) => {
-                        handleChangeAutocomplete('kelas', value);
+                        formik.setFieldValue('kelas', value);
                       }}
                       renderInput={(params) => (
                         <TextField {...params} label="Kelas" />
@@ -503,7 +551,7 @@ const AccountProfileDetails = (props) => {
             ) : (
               ''
             )}
-            <Button disabled={isUpload} color="primary" type="submit" variant="contained">
+            <Button disabled={!formik.isValid} color="primary" type="submit" variant="contained">
               Save
             </Button>
           </Stack>

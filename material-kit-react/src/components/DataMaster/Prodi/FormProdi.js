@@ -16,13 +16,12 @@ import {
   Autocomplete,
   Stack
 } from '@material-ui/core';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import { updateData, setAlertTrue } from '../../../store/action/masterAction';
 import AlertMessage from '../../AlertMessage';
 
 const AccountProfileDetails = (props) => {
-  const [selectedProdi, setProdi] = useState('');
-  const [selectedKelas, setKelas] = useState([]);
-  const [isUpload, setIsUpload] = useState(false);
   const { edit, prodi } = useSelector((state) => state.master);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -31,60 +30,69 @@ const AccountProfileDetails = (props) => {
     dispatch(setAlertTrue(data));
   };
 
-  const submit = (e) => {
-    e.preventDefault();
-    setIsUpload(true);
-    if (edit) {
-      axios
-        .put(`${process.env.REACT_APP_API}programStudi/${prodi._id}`, {
-          nama: selectedProdi.trim()
-        })
-        .then((res) => {
-          console.log(res);
-          dispatch(updateData());
-          navigate('/app/master/prodi');
-        })
-        .catch((err) => {
-          console.log(err.response.status);
-
-          if (err.response.status === 412) {
-            handleClickOpen();
-            console.log('ok');
-          }
-        });
-    } else {
-      console.log({
-        id: new Date().getTime,
-        nama: selectedProdi
-      });
-      axios
-        .post(`${process.env.REACT_APP_API}programStudi`, {
-          id: new Date().getTime,
-          nama: selectedProdi.trim()
-        })
-        .then((res) => {
-          console.log(res);
-          navigate('/app/master/prodi');
-        })
-        .catch((err) => {
-          console.log(err.response.status);
-
-          if (err.response.status === 412) {
-            handleClickOpen();
-            console.log('ok');
-          }
-        });
-    }
+  const initialValues = {
+    prodi: ''
   };
 
+  const validationSchema = Yup.object({
+    prodi: Yup.string().required('Required!')
+  });
+
+  const formik = useFormik({
+    initialValues,
+    validationSchema,
+    onSubmit: (values, onSubmitProps) => {
+      if (edit) {
+        axios
+          .put(`${process.env.REACT_APP_API}programStudi/${prodi._id}`, {
+            nama: values.prodi.trim()
+          })
+          .then((res) => {
+            console.log(res);
+            dispatch(updateData());
+            navigate('/app/master/prodi');
+          })
+          .catch((err) => {
+            console.log(err.response.status);
+
+            if (err.response.status === 412) {
+              handleClickOpen();
+              console.log('ok');
+            }
+            onSubmitProps.setSubmitting(false);
+          });
+      } else {
+        axios
+          .post(`${process.env.REACT_APP_API}programStudi`, {
+            id: new Date().getTime,
+            nama: values.prodi.trim()
+          })
+          .then((res) => {
+            console.log(res);
+            navigate('/app/master/prodi');
+          })
+          .catch((err) => {
+            console.log(err.response.status);
+
+            if (err.response.status === 412) {
+              handleClickOpen();
+              console.log('ok');
+            }
+            onSubmitProps.setSubmitting(false);
+          });
+      }
+    }
+  });
   useEffect(() => {
     if (edit) {
-      setProdi(prodi.nama);
+      formik.setFieldValue('prodi', prodi.nama);
     }
   }, []);
 
+  console.log(formik);
+
   return (
-    <form autoComplete="off" {...props} onSubmit={(e) => submit(e)}>
+    <form autoComplete="off" {...props} onSubmit={formik.handleSubmit}>
       <Card>
         <CardHeader
           subheader="Lengkapi Data Berikut"
@@ -96,12 +104,13 @@ const AccountProfileDetails = (props) => {
             <Grid item md={12} xs={12}>
               <TextField
                 fullWidth
-                helperText="Masukan Nama Prodi"
                 label="Program Studi"
                 name="Kode"
-                onChange={(e) => setProdi(e.target.value)}
+                helperText={formik.touched.prodi && formik.errors.prodi ? formik.errors.prodi : ''}
+                error={formik.touched.prodi && !!formik.errors.prodi}
+                type="text"
+                {...formik.getFieldProps('prodi')}
                 required
-                value={selectedProdi}
                 variant="outlined"
               />
             </Grid>
@@ -128,7 +137,7 @@ const AccountProfileDetails = (props) => {
             ) : (
               ''
             )}
-            <Button disabled={isUpload} color="primary" variant="contained" type="submit">
+            <Button disabled={!formik.isValid || formik.isSubmitting} color="primary" variant="contained" type="submit">
               Save
             </Button>
           </Stack>

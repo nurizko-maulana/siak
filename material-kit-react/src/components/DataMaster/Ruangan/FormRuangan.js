@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import {
   Box,
   Button,
@@ -10,6 +10,8 @@ import {
   TextField,
   Stack
 } from '@material-ui/core';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -20,73 +22,83 @@ const AccountProfileDetails = (props) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { ruangan, edit } = useSelector((state) => state.master);
-
-  const [ruang, setRuang] = useState('');
-  const [isUpload, setIsUpload] = useState(false);
-  useEffect(() => {
-    if (edit) {
-      setRuang(ruangan.ruang);
-    }
-  }, [dispatch, edit, ruangan]);
-
   const handleClickOpen = (data) => {
     dispatch(setAlertTrue(data));
   };
 
-  function submit(e) {
-    e.preventDefault();
-    setIsUpload(true);
-    if (edit) {
-      const { _id } = ruangan;
-      axios
-        .put(`${process.env.REACT_APP_API}ruangan/${_id}`, {
-          nama: ruang.trim()
-        })
-        .then((res) => {
-          console.log(res);
-          navigate('/app/master/ruangan');
-          dispatch(updateData());
-        })
-        .catch((err) => {
-          console.log(err.response.status);
+  // eslint-disable-next-line no-unused-vars
+  const validationSchema = Yup.object({
+    ruanganValue: Yup.string().required('Required!')
+  });
 
-          if (err.response.status === 412) {
-            handleClickOpen();
-            console.log('ok');
-          }
-        });
-    } else {
-      axios
-        .post(`${process.env.REACT_APP_API}ruangan`, {
-          nama: ruang.trim()
-        })
-        .then((res) => {
-          console.log(res);
-          navigate('/app/master/ruangan');
-          dispatch(updateData());
-        })
-        .catch((err) => {
-          console.log(err.response.status);
+  const formik = useFormik({
+    initialValues: {
+      ruanganValue: ''
+    },
+    validationSchema,
+    validateOnMount: true,
+    onSubmit: (values, onSubmitProps) => {
+      console.log('ok');
+      if (edit) {
+        const { _id } = ruangan;
+        axios
+          .put(`${process.env.REACT_APP_API}ruangan/${_id}`, {
+            nama: values.ruanganValue
+          })
+          .then((res) => {
+            console.log(res);
+            navigate('/app/master/ruangan');
+            dispatch(updateData());
+          })
+          .catch((err) => {
+            console.log(err.response.status);
 
-          if (err.response.status === 412) {
-            handleClickOpen();
-            console.log('ok');
-          }
-        });
+            if (err.response.status === 412) {
+              handleClickOpen();
+              console.log('ok');
+            }
+            onSubmitProps.setSubmitting(false);
+          });
+      } else {
+        axios
+          .post(`${process.env.REACT_APP_API}ruangan`, {
+            nama: values.ruanganValue
+          })
+          .then((res) => {
+            console.log(res);
+            navigate('/app/master/ruangan');
+            dispatch(updateData());
+          })
+          .catch((err) => {
+            console.log(err.response.status);
+
+            if (err.response.status === 412) {
+              handleClickOpen();
+              console.log('ok');
+            }
+            onSubmitProps.setSubmitting(false);
+          });
+      }
     }
-  }
-  const handleChange = (e) => {
-    setRuang(e.target.value);
-  };
+  });
+  useEffect(() => {
+    if (edit) {
+      // setRuang(ruangan.ruang);
+      formik.setFieldValue('ruanganValue', ruangan.ruang);
+    }
+  }, [dispatch, edit, ruangan]);
 
   useEffect(() => {
     if (edit) {
-      setRuang(ruangan.nama);
+      formik.setFieldValue('ruanganValue', ruangan.nama);
     }
   }, []);
 
+  console.log('form values', formik);
+  console.log('form error', formik.errors);
+
   return (
-    <form autoComplete="off" {...props} onSubmit={(e) => submit(e)}>
+    <form autoComplete="off" {...props} onSubmit={formik.handleSubmit}>
       <Card>
         <CardHeader
           subheader="Lengkapi Data Berikut"
@@ -98,13 +110,13 @@ const AccountProfileDetails = (props) => {
             <Grid item md={12} xs={12}>
               <TextField
                 fullWidth
-                helperText="Masukan Kode Ruangan"
+                helperText={formik.touched.ruanganValue && formik.errors.ruanganValue ? formik.errors.ruanganValue : ''}
                 label="Ruangan"
-                name="ruang"
+                name="ruanganValue"
                 type="number"
-                onChange={handleChange}
+                {...formik.getFieldProps('ruanganValue')}
                 required
-                value={ruang}
+                error={formik.touched.ruanganValue && !!formik.errors.ruanganValue}
                 variant="outlined"
               />
             </Grid>
@@ -131,7 +143,7 @@ const AccountProfileDetails = (props) => {
             ) : (
               ''
             )}
-            <Button disabled={isUpload} color="primary" variant="contained" type="submit">
+            <Button disabled={!formik.isValid || formik.isSubmitting} color="primary" variant="contained" type="submit">
               Save
             </Button>
           </Stack>
