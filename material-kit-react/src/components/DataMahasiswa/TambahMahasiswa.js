@@ -97,13 +97,14 @@ const AccountProfileDetails = (props) => {
     email: Yup.string().email().required('Required!'),
     jalan: Yup.mixed().required('Required!'),
     noTelp: Yup.string().required('Required!'),
-    file: Yup.mixed().required('Required!'),
+    // file: Yup.mixed().required('Required!'),
     image: Yup.mixed().required('Required!'),
   });
 
   const formik = useFormik({
     initialValues,
     validationSchema,
+    validateOnMount: false,
     onSubmit: (values, onSubmitProps) => {
       if (edit) {
         const data = document.getElementById('form');
@@ -233,26 +234,23 @@ const AccountProfileDetails = (props) => {
     getProdi();
     loadProvinsi();
     if (edit) {
-      formik.setFieldValue((v) => ({
-        ...v,
-        nim: mahasiswa.nim,
-        nik: mahasiswa.nik,
-        nama: mahasiswa.nama,
-        jenisKelamin: mahasiswa.jenisKelamin,
-        programStudi: mahasiswa.id_programStudi,
-        kelas: mahasiswa.id_kelas,
-        email: mahasiswa.email,
-        alamat: mahasiswa.alamat,
-        noTelp: mahasiswa.noTelp,
-        alamatOrtu: mahasiswa.alamatOrtu,
-        jalan: mahasiswa.jalan,
-        firstName: mahasiswa.firstName,
-        lastName: mahasiswa.lastName,
-        image: `${process.env.REACT_APP_API_IMAGE + mahasiswa.foto}`
-      }));
+      formik.setFieldValue('nim', mahasiswa.nim);
+      formik.setFieldValue('nik', mahasiswa.nik);
+      formik.setFieldValue('jenisKelamin', mahasiswa.jenisKelamin);
+      formik.setFieldValue('programStudi', mahasiswa.id_programStudi);
+      formik.setFieldValue('kelas', mahasiswa.id_kelas);
+      formik.setFieldValue('email', mahasiswa.email);
+      formik.setFieldValue('alamat', mahasiswa.alamat);
+      formik.setFieldValue('noTelp', mahasiswa.noTelp);
+      formik.setFieldValue('jalan', mahasiswa.jalan);
+      formik.setFieldValue('firstName', mahasiswa.firstName);
+      formik.setFieldValue('lastName', mahasiswa.lastName);
+      formik.setFieldValue('image', `${process.env.REACT_APP_API_IMAGE + mahasiswa.foto}`);
       loadKelas(mahasiswa.id_programStudi?._id);
     }
   }, []);
+
+  console.log(formik.values);
   return (
     <form id="form" autoComplete="off" {...props} onSubmit={formik.handleSubmit}>
       <Card>

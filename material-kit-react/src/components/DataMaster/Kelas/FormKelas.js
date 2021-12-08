@@ -64,7 +64,7 @@ const AccountProfileDetails = (props) => {
   const formik = useFormik({
     initialValues,
     validationSchema,
-    // validateOnMount: true,
+    validateOnMount: true,
     onSubmit: (values, onSubmitProps) => {
       setIsUpload(true);
       if (edit) {
