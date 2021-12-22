@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -26,7 +26,7 @@ function SignUp() {
   const classes = useStyle();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { error } = useSelector((e) => e.users);
+  const { error, auth } = useSelector((e) => e.users);
   const validationSchema = Yup.object({
     email: Yup.string().required('Required!').email(),
     password: Yup.string().required('Required!').min(8, 'at least 8 character')
@@ -40,8 +40,15 @@ function SignUp() {
     validationSchema,
     onSubmit: (values) => {
       dispatch(userSignUp(values.email, values.password));
+      navigate('/app/master', { replace: true });
     }
   });
+  useEffect(() => {
+    if (localStorage.getItem('auth')) {
+      console.log('login true');
+      navigate('/app/master', { replace: true });
+    }
+  }, [auth]);
   return (
     <Container sx={{ marginTop: '2em' }}>
       <Grid container justifyContent="center" rowSpacing={1}>
