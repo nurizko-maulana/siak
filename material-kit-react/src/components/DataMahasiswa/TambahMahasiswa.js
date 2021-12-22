@@ -29,7 +29,8 @@ import axios from 'axios';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
-import { updateData } from '../../store/action/masterAction';
+import { updateData, setAlertTrue } from '../../store/action/masterAction';
+import AlertMessage from '../AlertMessage';
 
 const AccountProfileDetails = (props) => {
   const navigate = useNavigate();
@@ -64,13 +65,17 @@ const AccountProfileDetails = (props) => {
   const [selectedKabupaten, setKabupaten] = useState({});
   const [selectedKecamatan, setKecamatan] = useState({});
 
+  const handleClickOpen = (data) => {
+    dispatch(setAlertTrue(data));
+  };
+
   const initialValues = {
     nim: '',
     nik: '',
     nama: '',
     firstName: '',
     lastName: '',
-    jenisKelamin: '',
+    jenisKelamin: 'Laki-laki',
     programStudi: {},
     kelas: {},
     email: '',
@@ -125,6 +130,14 @@ const AccountProfileDetails = (props) => {
             console.log('respon mahasiswa', res);
             navigate('/app/mahasiswa');
             dispatch(updateData());
+          })
+          .catch((err) => {
+            console.log(err.response.status);
+            if (err.response.status === 412) {
+              handleClickOpen();
+              console.log('ok');
+            }
+            onSubmitProps.setSubmitting(false);
           });
       } else {
         const data = document.getElementById('form');
@@ -144,6 +157,14 @@ const AccountProfileDetails = (props) => {
           .then((res) => {
             console.log('respon mahasiswa', res);
             navigate('/app/mahasiswa');
+          })
+          .catch((err) => {
+            console.log(err.response.status);
+            if (err.response.status === 412) {
+              handleClickOpen();
+              console.log('ok');
+            }
+            onSubmitProps.setSubmitting(false);
           });
       }
     }
@@ -551,6 +572,7 @@ const AccountProfileDetails = (props) => {
           </Stack>
         </Box>
       </Card>
+      <AlertMessage message="nim sudah terdaftar" />
     </form>
   );
 };

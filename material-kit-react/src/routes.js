@@ -4,6 +4,8 @@ import MainLayout from './components/MainLayout';
 import Master from './pages/Master';
 import Absensi from './pages/Absensi';
 import Print from './pages/Print';
+import Login from './pages/Login';
+import SignUp from './pages/SignUp';
 import DataMahasiswa from './pages/DataMahasiswa';
 import DataKehadiran from './pages/DataKehadiran';
 import TambahMahasiswa from './pages/TambahMahasiswa';
@@ -101,9 +103,19 @@ const routes = [
     ]
   },
   {
+    path: '/login',
+    exact: true,
+    element: <Login />
+  },
+  {
+    path: '/signup',
+    exact: true,
+    element: <SignUp />
+  },
+  {
     path: '/print',
     element: <Print />
-  },
+  }
 ];
 
 export default routes;

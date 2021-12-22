@@ -1,4 +1,7 @@
 export const GET_USERS = 'GET_USERS';
+export const USER_SIGNUP = 'USER_SIGNUP';
+export const USER_LOGIN = 'USER_LOGIN';
+export const USER_LOGOUT = 'USER_LOGOUT';
 export const USERS_ERROR = 'USERS';
 export const SET_EDIT_FALSE = 'SET_EDIT_FALSE';
 export const SET_EDIT_RUANGAN = 'SET_EDIT_RUANGAN';

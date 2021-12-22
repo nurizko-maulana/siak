@@ -35,6 +35,7 @@ const AccountProfileDetails = (props) => {
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
   const [isUpload, setIsUpload] = useState(false);
+  const [mahasiswa, setMahasiswa] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -91,8 +92,8 @@ const AccountProfileDetails = (props) => {
         })
         .then((res) => {
           console.log(res);
-          // navigate('/app/absensi');
           setIsUpload(false);
+          navigate('/app/absensi');
         });
     }
   });

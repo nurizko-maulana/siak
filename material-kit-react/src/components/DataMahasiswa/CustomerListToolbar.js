@@ -47,7 +47,7 @@ const CustomerListToolbar = (props) => {
                     </InputAdornment>
                   )
                 }}
-                placeholder="Search Matakuliah"
+                placeholder="Search Mahasiswa"
                 variant="outlined"
                 value={filter.mahasiswa}
                 onChange={(e) => {

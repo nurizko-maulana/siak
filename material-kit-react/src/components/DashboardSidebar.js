@@ -12,7 +12,7 @@ import {
   List
   // Typography
 } from '@material-ui/core';
-import { CheckSquare, Folder, Server, Users as UsersIcon } from 'react-feather';
+import { CheckSquare, Folder, Server, } from 'react-feather';
 import NavItem from './NavItem';
 
 // const user = {
