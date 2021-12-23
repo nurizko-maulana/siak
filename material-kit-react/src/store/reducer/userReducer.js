@@ -47,7 +47,7 @@ const userReducer = (state = intialValue, action) => {
       return {
         ...state,
         auth: {},
-        errir: '',
+        error: '',
         loading: false
       };
     case USERS_ERROR:

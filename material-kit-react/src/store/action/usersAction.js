@@ -1,6 +1,10 @@
 import axios from 'axios';
 import {
-  USER_SIGNUP, USER_LOGIN, USER_LOGOUT, USERS_ERROR, SET_TOKEN
+  USER_SIGNUP,
+  USER_LOGIN,
+  USER_LOGOUT,
+  USERS_ERROR,
+  SET_TOKEN
 } from '../types';
 
 // eslint-disable-next-line import/prefer-default-export

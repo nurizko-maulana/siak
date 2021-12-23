@@ -48,7 +48,7 @@ function SignUp() {
         userSignUp(
           values.email,
           values.password,
-          `${values.firstName.trim()}  ${values.lastName.trim()}`
+          `${values.firstName.trim()}  ${values.lastName.trim()}`,
         )
       );
       resetForm({});
@@ -57,7 +57,7 @@ function SignUp() {
   useEffect(() => {
     if (localStorage.getItem('auth')) {
       console.log('login true');
-      // navigate('/app/mahasiswa', { replace: true });
+      navigate('/app/mahasiswa', { replace: true });
     }
   }, [auth]);
   return (
