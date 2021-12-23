@@ -14,3 +14,4 @@ export const SET_ALERT_FALSE = 'SET_ALERT_FALSE';
 export const SET_EDIT_ABSENSI = 'SET_EDIT_ABSENSI';
 export const SET_FILTER_ABSENSI = 'SET_FILTER_ABSENSI';
 export const SET_FILTER = 'SET_FILTER';
+export const SET_TOKEN = 'SET_TOKEN';

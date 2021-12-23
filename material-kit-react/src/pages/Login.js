@@ -50,8 +50,7 @@ function Login() {
 
   useEffect(() => {
     if (localStorage.getItem('auth')) {
-      console.log('login true');
-      navigate('/app/master', { replace: true });
+      navigate('/app/mahasiswa', { replace: true });
     }
   }, [auth]);
 
@@ -93,7 +92,7 @@ function Login() {
                 label="password"
                 type="password"
               />
-              {error === 'EMAIL_NOT_FOUND' ? (
+              {error === 'EMAIL_NOT_FOUND' || error === 'INVALID_PASSWORD' ? (
                 <Typography sx={{ color: '#ba000d' }}>
                   email/password anda salah
                 </Typography>

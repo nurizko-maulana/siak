@@ -1,14 +1,14 @@
 import axios from 'axios';
 import {
-  USER_SIGNUP, USER_LOGIN, USER_LOGOUT, USERS_ERROR
+  USER_SIGNUP, USER_LOGIN, USER_LOGOUT, USERS_ERROR, SET_TOKEN
 } from '../types';
 
 // eslint-disable-next-line import/prefer-default-export
-export const userSignUp = (email, password) => async (dispatch) => {
+export const userSignUp = (email, password, displayName) => async (dispatch) => {
   const postData = {
     email,
     password,
-    kembaliSecureToken: true
+    returnSecureToken: true
   };
 
   await axios
@@ -21,11 +21,37 @@ export const userSignUp = (email, password) => async (dispatch) => {
         }
       }
     )
-    .then((res) => {
-      dispatch({
-        type: USER_SIGNUP,
-        payload: res.data
-      });
+    .then(async (res) => {
+      localStorage.setItem('auth', JSON.stringify(res.data.idToken));
+      console.log('token auth action', res.data.idToken);
+      const updateData = {
+        idToken: res.data.idToken,
+        returnSecureToken: true,
+        displayName
+      };
+      await axios
+        .post(
+          'https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyCl5291tln9OXHJrGnJimgqHgvZjsyD1vU',
+          updateData,
+          {
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }
+        )
+        .then((res2) => {
+          console.log(res2);
+          dispatch({
+            type: USER_SIGNUP,
+            payload: res2.data
+          });
+        })
+        .catch((e) => {
+          dispatch({
+            type: USERS_ERROR,
+            payload: e.response.data.error.message
+          });
+        });
       console.log(res);
     })
     .catch((e) => {
@@ -79,4 +105,11 @@ export const logout = () => async (dispatch) => {
       payload: console.log(e)
     });
   }
+};
+
+export const setToken = (token) => (dispatch) => {
+  dispatch({
+    type: SET_TOKEN,
+    payload: token
+  });
 };

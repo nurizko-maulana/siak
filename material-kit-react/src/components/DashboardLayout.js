@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Navigate, useNavigate } from 'react-router';
 import { styled } from '@material-ui/core/styles';
+import { useSelector, useDispatch } from 'react-redux';
 import DashboardNavbar from './DashboardNavbar';
 import DashboardSidebar from './DashboardSidebar';
+import { setToken } from '../store/action/usersAction';
 
 const DashboardLayoutRoot = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
@@ -37,12 +39,25 @@ const DashboardLayoutContent = styled('div')({
 
 const DashboardLayout = () => {
   const [isMobileNavOpen, setMobileNavOpen] = useState(false);
-  const auth = localStorage.getItem('auth');
   const navigate = useNavigate();
+  const { auth } = useSelector((s) => s.users);
+  const dispatch = useDispatch();
 
   useEffect(() => {
+    console.log('login auth', localStorage.getItem('auth'));
+    console.log('login displayName', localStorage.getItem('displayName'));
     if (!localStorage.getItem('auth')) {
-      navigate('/login', { replace: true });
+      navigate('/login');
+    }
+    console.log('set auth token', auth.idToken);
+    if (!auth.idToken && localStorage.getItem('auth')) {
+      console.log('set auth token');
+      dispatch(
+        setToken({
+          idToken: JSON.parse(localStorage.getItem('auth')),
+          displayName: JSON.parse(localStorage.getItem('displayName'))
+        })
+      );
     }
   }, [auth]);
 
