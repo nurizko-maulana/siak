@@ -45,7 +45,7 @@ const DashboardNavbar = ({ onMobileNavOpen, ...rest }) => {
           <Logo />
         </RouterLink>
         <Box sx={{ flexGrow: 1 }} />
-        <Typography variant="h4" sx={{ marginRight: '1em' }}>{auth.displayName ? auth.displayName : auth.email}</Typography>
+        <Typography variant="h4" sx={{ marginRight: '1em' }}>{auth.displayName ? `Hi, ${auth.displayName}` : auth.email}</Typography>
         <Box sx={{ flexGrow: 0 }}>
           <Tooltip title="Open settings">
             <IconButton
