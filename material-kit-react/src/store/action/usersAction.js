@@ -8,7 +8,7 @@ import {
 } from '../types';
 
 // eslint-disable-next-line import/prefer-default-export
-export const userSignUp = (email, password, displayName) => async (dispatch) => {
+export const userSignUp = (email, password, displayName, callback) => async (dispatch) => {
   const postData = {
     email,
     password,
@@ -26,7 +26,6 @@ export const userSignUp = (email, password, displayName) => async (dispatch) => 
       }
     )
     .then(async (res) => {
-      localStorage.setItem('auth', JSON.stringify(res.data.idToken));
       console.log('token auth action', res.data.idToken);
       const updateData = {
         idToken: res.data.idToken,
@@ -49,6 +48,7 @@ export const userSignUp = (email, password, displayName) => async (dispatch) => 
             type: USER_SIGNUP,
             payload: res2.data
           });
+          callback();
         })
         .catch((e) => {
           dispatch({

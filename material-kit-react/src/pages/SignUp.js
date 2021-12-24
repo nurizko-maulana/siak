@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -26,7 +26,7 @@ function SignUp() {
   const classes = useStyle();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { error, auth } = useSelector((e) => e.users);
+  const { error } = useSelector((e) => e.users);
   const validationSchema = Yup.object({
     email: Yup.string().required('Required!').email(),
     firstName: Yup.string().required('Required!'),
@@ -40,6 +40,9 @@ function SignUp() {
     lastName: '',
     username: ''
   };
+  const redirect = () => {
+    navigate('/login');
+  };
   const formik = useFormik({
     initialValues,
     validationSchema,
@@ -49,17 +52,12 @@ function SignUp() {
           values.email,
           values.password,
           `${values.firstName.trim()}  ${values.lastName.trim()}`,
+          redirect
         )
       );
       resetForm({});
     }
   });
-  useEffect(() => {
-    if (localStorage.getItem('auth')) {
-      console.log('login true');
-      navigate('/app/mahasiswa', { replace: true });
-    }
-  }, [auth]);
   return (
     <Container sx={{ marginTop: '2em' }}>
       <Grid container justifyContent="center" rowSpacing={1}>
