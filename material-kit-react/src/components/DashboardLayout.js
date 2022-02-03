@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Navigate, useNavigate } from 'react-router';
 import { styled } from '@material-ui/core/styles';
+import { Snackbar, Alert } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
 import DashboardNavbar from './DashboardNavbar';
 import DashboardSidebar from './DashboardSidebar';
@@ -43,6 +44,16 @@ const DashboardLayout = () => {
   const { auth } = useSelector((s) => s.users);
   const dispatch = useDispatch();
 
+  const [open, setOpen] = useState(true);
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
+  };
+
   useEffect(() => {
     console.log('login auth', localStorage.getItem('auth'));
     console.log('login displayName', localStorage.getItem('displayName'));
@@ -63,11 +74,16 @@ const DashboardLayout = () => {
 
   return (
     <DashboardLayoutRoot>
-      <DashboardNavbar onMobileNavOpen={() => setMobileNavOpen(true)} />
+      <DashboardNavbar onMobileNavOpen={() => setMobileNavOpen(false)} />
       <DashboardSidebar
         onMobileClose={() => setMobileNavOpen(false)}
         openMobile={isMobileNavOpen}
       />
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+          This is a success message!
+        </Alert>
+      </Snackbar>
       <DashboardLayoutWrapper>
         <DashboardLayoutContainer>
           <DashboardLayoutContent>
